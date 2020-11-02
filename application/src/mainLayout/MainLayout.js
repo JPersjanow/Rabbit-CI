@@ -2,6 +2,7 @@ import React from 'react';
 import TopNav from './components/TopNav'
 import LeftMenu from './components/LeftMenu'
 import MainContent from './components/MainContent'
+import './MainLayout.css'
 
 class MainLayout extends React.Component {
 
@@ -17,8 +18,10 @@ class MainLayout extends React.Component {
         return (
             <div className="mainLayout">
                 <TopNav />
-                <LeftMenu />
-                <MainContent />
+                <div className="contentLayout">
+                    <LeftMenu />
+                    <MainContent />
+                </div>
             </div>
         )
     }
