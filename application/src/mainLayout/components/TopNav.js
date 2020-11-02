@@ -1,14 +1,15 @@
 import React from 'react';
 import '../componentsStyle/TopNav.css'
 
-const TopNav = () => {
+const TopNav = (props) => {
+    const userName = props.userName;
     return (
         <div className="mainTopNavStyle">
             <div className="logoContainer">
                 LOGO
             </div>
             <div className="userNameAndOptions">
-                <span>userName</span>
+                <span>{userName}</span>
                 <button className="optionsButton">options</button>
             </div>
         </div>

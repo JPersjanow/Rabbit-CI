@@ -7,7 +7,7 @@
 
 .userNameAndOptions{
     display: flex;
-    position: fixed;
+    position: absolute;
     right: 3%;
     font-size: 21px;
 }
