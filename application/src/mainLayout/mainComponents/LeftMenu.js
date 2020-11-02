@@ -1,5 +1,5 @@
 import React from 'react';
-import '../componentsStyle/LeftMenu.css'
+import '../mainComponentsStyle/LeftMenu.css'
 
 
 const LeftMenu = (props) => {

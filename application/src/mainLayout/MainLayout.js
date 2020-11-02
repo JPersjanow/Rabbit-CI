@@ -1,7 +1,7 @@
 import React from 'react';
-import TopNav from './components/TopNav'
-import LeftMenu from './components/LeftMenu'
-import MainContent from './components/MainContent'
+import TopNav from './mainComponents/TopNav'
+import LeftMenu from './mainComponents/LeftMenu'
+import MainContent from './mainComponents/MainContent'
 import './MainLayout.css'
 
 class MainLayout extends React.Component {

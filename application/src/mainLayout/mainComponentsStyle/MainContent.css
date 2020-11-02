@@ -1,0 +1,17 @@
+.mainContentStyle{
+    width: 82%;
+    padding: 3%;
+    text-transform: uppercase;
+}
+
+.contentTitle{
+    color: #FF6DAF !important;
+    font-size: 43px;
+    font-weight: 500;
+}
+
+.assignedKanbanContainer{
+    background-color: #F8F3F3;
+    text-align: center;
+    padding: 2%;
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import '../componentsStyle/TopNav.css'
+import '../mainComponentsStyle/TopNav.css'
 
 const TopNav = (props) => {
     const userName = props.userName;
