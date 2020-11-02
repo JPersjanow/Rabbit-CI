@@ -1,10 +1,11 @@
 import React from 'react';
-
+import '../componentsStyle/KanbanList.css'
 
 const ListElement = (props) => {
     const elements = props.userKanbans.map((item, index) => (
-        <div key={index}>
+        <div key={index} className="kanbansRow">
             <span>{item.kanbanName}</span>
+            <button style={{ float: 'right' }}><i class="fa fa-arrow-right"></i></button>
         </div>
     ))
     return elements;

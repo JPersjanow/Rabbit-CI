@@ -1,6 +1,6 @@
 .mainContentStyle{
     width: 82%;
-    padding: 3%;
+    padding: 2%;
     text-transform: uppercase;
 }
 
@@ -13,5 +13,5 @@
 .assignedKanbanContainer{
     background-color: #F8F3F3;
     text-align: center;
-    padding: 2%;
+    padding: 2% 0;
 }
