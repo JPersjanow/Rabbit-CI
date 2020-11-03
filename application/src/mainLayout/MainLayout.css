@@ -1,0 +1,7 @@
+.mainLayout{
+   width: 100%;
+}
+
+.contentLayout{
+   display: flex;
+}

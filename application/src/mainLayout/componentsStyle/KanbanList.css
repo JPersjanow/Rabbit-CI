@@ -1,0 +1,11 @@
+.kanbansRow{
+    margin: 1% 0;
+    padding: 1%;
+    text-align: left;
+    background-color: #E2E2E2;
+    border-left: 20px solid #FF6DAF;
+}
+
+.kanbansRow span{
+    margin-left: 5%;
+}
