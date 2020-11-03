@@ -1,0 +1,44 @@
+.leftMenuStyle{
+    width: 15%;
+    padding: 1%;
+    display: grid;
+    background-color: #E2E2E2;
+    min-height: 846px;
+}
+
+/*
+.kanbanButtonsContianer{
+   
+}*/
+
+.automationAndConfiguration {
+ display: grid;
+}
+
+.buttonsMenuContainer{
+    position: absolute;
+    bottom: 3%;
+    display: grid;
+    padding: 1%;
+    
+}
+
+.automationBtn{
+    
+}
+
+.configurationBtn{
+   
+}
+
+.btnColor{
+    background-color: transparent; 
+    color: black;
+    border: 2px solid white;
+  border-radius:4px;
+  font-size: 16px;
+  font-weight: 500;
+  margin:1% 0;
+  padding: 5%;
+  text-transform: uppercase;
+}

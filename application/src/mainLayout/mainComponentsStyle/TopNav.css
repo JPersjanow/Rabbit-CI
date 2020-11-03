@@ -1,0 +1,21 @@
+.mainTopNavStyle{
+    width: 100%;
+    display: flex;
+    padding: 1%;
+    background-color: #E2E2E2;
+}
+
+.userNameAndOptions{
+    display: flex;
+    position: absolute;
+    right: 3%;
+    font-size: 21px;
+}
+.userNameAndOptions span{
+    margin:0 1%;
+    font-weight: 500;
+}
+.optionsButton{
+    margin:0 1%;
+    font-size: 21px;
+}
