@@ -11,9 +11,15 @@ from tools.xml_tools import prettify, update_xml_attribute, create_xml_tree_for_
 from api import api, directory_creator
 
 ns = api.namespace('resources/kanban', description='Operations related to kanban boards located in management module')
-kanban_create_model = api.model('Kanban Creation', {
+kanban_update_model = api.model('Kanban Update', {
     'name': fields.String(required=True, description='Kanban name')
 })
+kanban_create_model = api.clone('Kanban Creation', kanban_update_model, {
+    'description': fields.String(required=True, description='Kanban description')
+})
+
+
+
 @ns.route('/')
 class KanbansAll(Resource):
     @api.response(200, "Kanban boards fetched")
@@ -46,7 +52,7 @@ class KanbansAll(Resource):
         except Exception as e:
             return {"response": "Kanban could not be created!", "exception": str(e)}, 500
         try:
-                config_tree = create_xml_tree_for_kanban_config(kanban_name=api.payload['name'], kanban_id=len(all_kanbans)+1)
+                config_tree = create_xml_tree_for_kanban_config(kanban_name=api.payload['name'], kanban_id=len(all_kanbans)+1, description=api.payload['description'])
                 with open(os.path.join(new_kanban_dir,"config.xml",), "w+") as file:
                     file.write(config_tree)
         except Exception as e:
@@ -79,10 +85,10 @@ class KanbanSingle(Resource):
         else:
             return {"response": f"Kanban board with id {kanban_id} not found"}, 404
 
-    @ns.expect(kanban_create_model)
+    @ns.expect(kanban_update_model)
     # @ns.marshal_with(kanban) THIS IS RETURNED
     def put(self, kanban_id):
-        """Updates kanban board with given id"""
+        """Updates name of kanban board with given id"""
         all_kanbans = glob(f"{directory_creator.kanban_directory}/*",recursive=True)
         for kanban_directory in all_kanbans:
             info = os.path.split(kanban_directory)
