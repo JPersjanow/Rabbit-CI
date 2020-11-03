@@ -30,6 +30,18 @@ class MainLayout extends React.Component {
         singleKanbanName: "",
     }
 
+    componentDidMount() {
+        const query ="http://localhost:5000/api/v1/resources/kanbans/all"; // http instead of https
+        fetch(query).then(response=>{
+            if(response.ok){
+                console.log(response);
+            }
+            throw Error(response.status)
+        }).then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error=>console.log(error))
+    }
+
     handleKanbanListButton = (kanbanName) => {
         const userTables = this.state.userKanbans;
         const chooseKanban = userTables.filter(tableName => tableName.kanbanName === kanbanName); //
