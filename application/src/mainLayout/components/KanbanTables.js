@@ -3,6 +3,7 @@ import SingleTables from './SingleTables';
 import '../componentsStyle/KanbanTables.css'
 
 const KanbanTables = (props) => {
+    const singleKanbanName = props.singleKanbanName;
     const userKanbanListButtonBackHandler = props.userKanbanListButtonBackHandler;
     const kanbanTablesContent = props.kanbanTablesContent;
     console.log(kanbanTablesContent);
@@ -15,7 +16,7 @@ const KanbanTables = (props) => {
                 </button>
             </div>
             <div className="contentTitle">
-                <span>Kanban Name</span>
+                <span>{singleKanbanName}</span>
             </div>
             <div className="kanbanTablesContainer">
                 <SingleTables kanbanTablesContent={kanbanTablesContent} />

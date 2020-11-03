@@ -28,16 +28,19 @@ const AssignedKanbanTable = (props) => {
 
 
 const MainContent = (props) => {
+
     const userKanbans = props.userKanbans;
+    const singleKanbanName = props.singleKanbanName;
     const userKanbanListButton = props.userKanbanListButton
     const kanbanTablesContent = props.kanbanTablesContent;
-    const userKanbansPage = props.isUserKanbansPage;
+    //const userKanbansPage = props.isUserKanbansPage;
     const userKanbansTablePage = props.isuserKanbansTablePage;
     const userKanbanListButtonBackHandler = props.userKanbanListButtonBackHandler;
     return (
         <div className="mainContentStyle">
             { kanbanTablesContent !== [] && userKanbansTablePage ?
                 <KanbanTables
+                    singleKanbanName={singleKanbanName}
                     userKanbanListButtonBackHandler={userKanbanListButtonBackHandler}
                     kanbanTablesContent={kanbanTablesContent} />
                 : <AssignedKanbanTable

@@ -27,14 +27,13 @@ class MainLayout extends React.Component {
         automationPage: false,       //page 4
         singleJobPage: false,        // page 5
         kanbanTablesContent: [],
+        singleKanbanName: "",
     }
 
     handleKanbanListButton = (kanbanName) => {
-        console.log(kanbanName)
         const userTables = this.state.userKanbans;
         const chooseKanban = userTables.filter(tableName => tableName.kanbanName === kanbanName); //
         console.log(chooseKanban);
-
         const toDoTable = chooseKanban[0].tables[0];
         const doingTable = chooseKanban[0].tables[1];
         const doneTable = chooseKanban[0].tables[2];
@@ -43,6 +42,7 @@ class MainLayout extends React.Component {
             kanbanTablesContent: kanbanTable,
             userKanbansPage: false,
             userKanbansTablePage: true,
+            singleKanbanName: kanbanName,
         })
     }
 
@@ -50,6 +50,7 @@ class MainLayout extends React.Component {
         this.setState({
             userKanbansPage: true,
             userKanbansTablePage: false,
+            singleKanbanName: "",
         })
     }
 
@@ -62,6 +63,7 @@ class MainLayout extends React.Component {
         const userKanbanListButtonHandler = this.handleKanbanListButton;
         const userKanbanListButtonBackHandler = this.handleKanbanListButtonBack;
         const kanbanTablesContent = this.state.kanbanTablesContent;
+        const singleKanbanName = this.state.singleKanbanName;
         return (
             <div className="mainLayout">
                 <TopNav
@@ -78,6 +80,7 @@ class MainLayout extends React.Component {
                         userKanbanListButton={userKanbanListButtonHandler}
                         userKanbanListButtonBackHandler={userKanbanListButtonBackHandler}
                         kanbanTablesContent={kanbanTablesContent}
+                        singleKanbanName={singleKanbanName}
                     />
                 </div>
             </div>
