@@ -3,7 +3,6 @@ import logging
 class Logger:
     def __init__(self, name: str):
         self.name = name
-        self.log = self.setup_logger()
 
     def setup_logger(self):
         # create logger
