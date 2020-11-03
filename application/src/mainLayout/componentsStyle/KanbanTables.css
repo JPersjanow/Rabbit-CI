@@ -1,0 +1,12 @@
+.kanbanTablesStyle{
+    display: grid;
+}
+
+.backButtonContainer{
+    display: block;
+}
+
+.kanbanTablesContainer{
+   display: flex;
+   margin-top:1%;
+}
