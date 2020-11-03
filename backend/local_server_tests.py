@@ -72,7 +72,7 @@ class BackendServer:
         self.kanban_directory = kanban_directory
 
     def start(self):
-        @self.app.route('/', methods=['GET'])
+        @self.app.route('/hello', methods=['GET'])
         def home():
             if request.method == 'GET':
                 return "<h1>Rabbit API v1</h1><p>This site is a prototype API for Rabbit-CI.</p>"
@@ -87,7 +87,9 @@ class BackendServer:
                 with open(single_kanban_config_file) as xml_file:
                     all_kanbans_info_list.append(xmltodict.parse(xml_file.read()))
 
-            return jsonify(all_kanbans_info_list)
+            response = jsonify(all_kanbans_info_list)
+            response.headers.add("Access-Control-Allow-Origin", "*") # CORE ALLOWANCE!!!!!
+            return response
 
         self.app.run(debug=True)
 
