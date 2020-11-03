@@ -4,11 +4,19 @@ import xmltodict
 from flask import jsonify, request
 import os
 import xml.etree.cElementTree as ET
+from xml.dom import minidom
 
 
 from api import api, directory_creator
 
-ns = api.namespace('resources/kanbans', description='Operations related to kanban boards located in management module')
+# here until code refactor
+def prettify(elem):
+        rough_string = ET.tostring(elem, 'utf-8')
+        reparsed = minidom.parseString(rough_string)
+        return reparsed.toprettyxml(indent="  ")
+
+
+ns = api.namespace('resources/kanban', description='Operations related to kanban boards located in management module')
 kanban_create_model = api.model('Kanban Creation', {
     'name': fields.String(required=True, description='Kanban name')
 })
@@ -16,7 +24,7 @@ kanban_create_model = api.model('Kanban Creation', {
 class KanbansAll(Resource):
     @api.response(200, "Kanban boards fetched")
     def get(self):
-        """Returns all kanban board with info"""
+        """Returns all kanban boards with info"""
         all_kanbans = glob(f"{directory_creator.kanban_directory}/*",recursive=True)
         all_kanbans_info_list = []
         print(all_kanbans)
@@ -29,6 +37,39 @@ class KanbansAll(Resource):
         response.headers.add("Access-Control-Allow-Origin", "*")
 
         return response
+    
+    @ns.expect(kanban_create_model)
+    @api.response(201, "New kanban board created")
+    @api.response(500, "Kanban could not be created")
+    def post(self):
+        """Create new kanban"""
+        all_kanbans = glob(f"{directory_creator.kanban_directory}/*",recursive=True)
+        try:
+            new_kanban_dir = os.path.join(directory_creator.kanban_directory, str(len(all_kanbans) + 1))
+            os.mkdir(new_kanban_dir,  mode=0o777)
+        except FileExistsError:
+            return {"response": "Kanban could not be created! Kanban already exists"}, 500
+        except Exception as e:
+            return {"response": "Kanban could not be created!", "exception": str(e)}, 500
+        try:
+                root = ET.Element("kanban")
+                info = ET.SubElement(root, "info")
+                ET.SubElement(info, "name").text = api.payload['name']
+                ET.SubElement(info, "id").text = str(len(all_kanbans) + 1)
+                for j in range(10):
+                    issues = ET.SubElement(info, "issues")
+                    ET.SubElement(issues, "name").text = f"ISS-{j}"
+                    ET.SubElement(issues, "creation_date").text = f"03/11/2020"
+                    ET.SubElement(issues, "id").text = str(j)
+                tree = prettify(root)
+                with open(os.path.join(new_kanban_dir,"config.xml",), "w+") as file:
+                    file.write(tree)
+        except Exception as e:
+            os.rmdir(new_kanban_dir)
+            return {"response": "Failed while creating config.xml file, deleting kanban.", "exception": str(e)}, 500
+
+        return {"response": f"New kanban board with id {len(all_kanbans) + 1} created"}
+        
 
 @ns.route('/<int:kanban_id>')
 class KanbanSingle(Resource):
