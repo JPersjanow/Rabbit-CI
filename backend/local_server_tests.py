@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from glob import glob
 import xml.etree.cElementTree as ET
+from xml.dom import minidom
 import xmltodict
 import os
 import sys
@@ -27,6 +28,11 @@ class DirectoryCreator:
         except Exception as e:
             self.logger.exception(e)
 
+    def prettify(self, elem):
+        rough_string = ET.tostring(elem, 'utf-8')
+        reparsed = minidom.parseString(rough_string)
+        return reparsed.toprettyxml(indent="  ")
+
     ### TESTING PURPOSES ###
     def create_fake_kanbans(self, num_kanbans: int):
         self.logger.debug("Creating fake kanban directories!")
@@ -44,10 +50,16 @@ class DirectoryCreator:
             try:
                 root = ET.Element("kanban")
                 info = ET.SubElement(root, "info")
+                ET.SubElement(info, "name").text = f"kanban_{str(i)}"
                 ET.SubElement(info, "id").text = f"{str(i)}"
-                ET.SubElement(info, "name").text = f"kanban_{str(i)}" 
-                tree = ET.ElementTree(root)
-                tree.write(os.path.join(single_kanban,"config.xml"))
+                for j in range(10):
+                    issues = ET.SubElement(info, "issues")
+                    ET.SubElement(issues, "name").text = f"ISS-{j}"
+                    ET.SubElement(issues, "creation_date").text = f"03/11/2020"
+                    ET.SubElement(issues, "id").text = str(j)
+                tree = self.prettify(root)
+                with open(os.path.join(single_kanban,"config.xml",), "w+") as file:
+                    file.write(tree)
             except Exception as e:
                 self.logger.exception(e)
 
