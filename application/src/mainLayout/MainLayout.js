@@ -70,7 +70,8 @@ class MainLayout extends React.Component {
                     userName={this.state.userName}
                 />
                 <div className="contentLayout">
-                    <LeftMenu />
+                    <LeftMenu
+                        userKanbansTablePage={userKanbansTablePage} />
                     <MainContent
                         userKanbans={userKanbans}
                         isUserKanbansPage={userKanbansPage}
