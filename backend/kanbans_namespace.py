@@ -1,4 +1,4 @@
-from flask_restplus import Resource, reqparse, fields
+from flask_restplus import Resource, fields
 from glob import glob
 import xmltodict
 from flask import jsonify, request

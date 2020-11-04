@@ -6,12 +6,14 @@ from directory_creator import DirectoryCreator
 import xmltodict
 from api import api, directory_creator
 from kanbans_namespace import ns as kanban_namespace
+from issues_namespace import ns as issues_namespace
 app = Flask(__name__)
 
 def initialize_app(flask_app):
     blueprint = Blueprint('api', __name__, url_prefix='/api/v1')
     api.init_app(blueprint)
     api.add_namespace(kanban_namespace)
+    api.add_namespace(issues_namespace)
     flask_app.register_blueprint(blueprint)
 
 def main():
