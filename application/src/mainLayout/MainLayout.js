@@ -8,20 +8,7 @@ class MainLayout extends React.Component {
 
     state = {
         userName: "user1",
-        userKanbans: [
-            {
-                kanbanName: "Kanban1",
-                tables: [
-                    { toDo: "toDo1", }, { doing: " ", }, { done: "done1" }]
-            },
-            {
-                kanbanName: "Kanban2", tables: [
-                    { toDo: "" }, { doing: "doing2" }, { done: "done2" }]
-            }, {
-                kanbanName: "Kanban3", tables: [
-                    { toDo: "toDo3" }, { doing: "doing3" }, { done: "done3" }]
-            }, // each kanban has a few jobs
-        ],                   // page from canva project
+        userKanbans: [],               // page from canva project
         userKanbansPage: true,        //page 1
         userKanbansTablePage: false, //page 2, 3
         automationPage: false,       //page 4
@@ -31,30 +18,34 @@ class MainLayout extends React.Component {
     }
 
     componentDidMount() {
-        const query ="http://localhost:5000/api/v1/resources/kanbans/all"; // http instead of https
-        fetch(query).then(response=>{
-            if(response.ok){
-                console.log(response);
+        const query = "http://localhost:5000/api/v1/resources/kanbans/all"; // http instead of https
+        fetch(query).then(response => {
+            if (response.ok) {
+                return response // need this to clear data and take array
             }
             throw Error(response.status)
         }).then(response => response.json())
-            .then(data => console.log(data))
-            .catch(error=>console.log(error))
+            .then(data => {
+                console.log(data);
+                this.setState({
+                    userKanbans: data
+                })
+            })
+            .catch(error => console.log(error))
     }
 
-    handleKanbanListButton = (kanbanName) => {
+    handleKanbanListButton = (kanbanId) => {
+        console.log(kanbanId);
+
         const userTables = this.state.userKanbans;
-        const chooseKanban = userTables.filter(tableName => tableName.kanbanName === kanbanName); //
+        const chooseKanban = userTables.filter(item => item.kanban.info.id === kanbanId); //
         console.log(chooseKanban);
-        const toDoTable = chooseKanban[0].tables[0];
-        const doingTable = chooseKanban[0].tables[1];
-        const doneTable = chooseKanban[0].tables[2];
-        const kanbanTable = [toDoTable, doingTable, doneTable];
+        const chooseKanbanIssue = chooseKanban[0].kanban.info.issues;
+        console.log(chooseKanbanIssue);
         this.setState({
-            kanbanTablesContent: kanbanTable,
+            kanbanTablesContent: chooseKanbanIssue,
             userKanbansPage: false,
             userKanbansTablePage: true,
-            singleKanbanName: kanbanName,
         })
     }
 

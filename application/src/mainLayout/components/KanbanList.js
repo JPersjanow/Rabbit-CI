@@ -2,10 +2,11 @@ import React from 'react';
 import '../componentsStyle/KanbanList.css'
 
 const ListElement = (props) => {
-    const elements = props.userKanbans.map((item, index) => (
-        <div key={index} className="kanbansRow">
-            <span>{item.kanbanName}</span>
-            <button onClick={() => props.userKanbanListButton(item.kanbanName)}
+    //console.log(props.userKanbans[0].kanban.info);
+    const elements = props.userKanbans.map((item) => (
+        <div key={item.kanban.info.id} className="kanbansRow">
+            <span>{item.kanban.info.name}</span>
+            <button onClick={() => props.userKanbanListButton(item.kanban.info.id)}
                 style={{ float: 'right' }}>
                 <i className="fa fa-arrow-right"></i>
             </button>

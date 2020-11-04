@@ -11,7 +11,7 @@ const SingleTables = (props) => {
                 <span>{item.toDo}</span>
             </div>
             <div className="tableContent">
-                <spna>{item.toDo}</spna>
+                <span>{item.toDo}</span>
             </div>
 
         </div>
