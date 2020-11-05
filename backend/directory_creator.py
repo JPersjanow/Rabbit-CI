@@ -4,15 +4,14 @@ from xml.dom import minidom
 import xmltodict
 import os
 import sys
-import log
+from log import Logger
 
 class DirectoryCreator:
     def __init__(self):
         self.current_dir = os.getcwd()
-        self.logger = log.Logger('dir_creator').log
+        self.logger = Logger('dir_creator').setup_logger()
 
-        self.kanban_directory = os.path.join(self.current_dir, 'kanbans')
-    
+        self.kanban_directory = os.path.join(self.current_dir, 'kanbans')    
 
     def create_directory_tree(self):
         self.logger.info("Creating directory")
@@ -24,6 +23,8 @@ class DirectoryCreator:
             self.logger.warning(f"{self.kanban_directory} already exists!")
         except Exception as e:
             self.logger.exception(e)
+
+        self.logger.info("Creating issues directory")
 
     def prettify(self, elem):
         rough_string = ET.tostring(elem, 'utf-8')
