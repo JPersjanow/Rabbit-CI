@@ -1,14 +1,12 @@
 from flask_restplus import Resource, fields
+from flask import jsonify
 from glob import glob
 import xmltodict
-from flask import jsonify, request
 import os
-import xml.etree.cElementTree as ET
-from xml.dom import minidom
-from tools.xml_tools import prettify, update_xml_attribute, create_xml_tree_for_kanban_config
 
-
-from api import api, directory_creator
+from tools.xml_tools import update_xml_attribute, create_xml_tree_for_kanban_config
+from tools.config_reader import ConfigReader
+from api import api
 
 ns = api.namespace('resources/kanbans', description='Operations related to kanban boards located in management module')
 kanban_update_model = api.model('Kanban Update', {
@@ -18,12 +16,14 @@ kanban_create_model = api.clone('Kanban Creation', kanban_update_model, {
     'description': fields.String(required=True, description='Kanban description')
 })
 
+config = ConfigReader()
+
 @ns.route('/')
 class KanbansAll(Resource):
     @api.response(200, "Kanban boards fetched")
     def get(self):
         """Returns all kanban boards with info"""
-        all_kanbans = glob(f"{directory_creator.kanban_directory}/*",recursive=True)
+        all_kanbans = glob(f"{config.kanban_directory}/*",recursive=True)
         all_kanbans_info_list = []
         print(all_kanbans)
         for single_kanban_dir in all_kanbans:
@@ -41,9 +41,9 @@ class KanbansAll(Resource):
     @api.response(500, "Kanban could not be created")
     def post(self):
         """Create new kanban"""
-        all_kanbans = glob(f"{directory_creator.kanban_directory}/*",recursive=True)
+        all_kanbans = glob(f"{config.kanban_directory}/*",recursive=True)
         try:
-            new_kanban_dir = os.path.join(directory_creator.kanban_directory, str(len(all_kanbans) + 1))
+            new_kanban_dir = os.path.join(config.kanban_directory, str(len(all_kanbans) + 1))
             os.mkdir(new_kanban_dir,  mode=0o777)
         except FileExistsError:
             return {"response": "Kanban could not be created! Kanban already exists"}, 500
@@ -67,7 +67,7 @@ class KanbanSingle(Resource):
     @api.response(404, "Kanban board with id not found")
     def get(self, kanban_id):
         """Returns kanban board with given id"""
-        all_kanbans = glob(f"{directory_creator.kanban_directory}/*",recursive=True)
+        all_kanbans = glob(f"{config.kanban_directory}/*",recursive=True)
         for kanban_directory in all_kanbans:
             info = os.path.split(kanban_directory)
             if str(kanban_id) in info:
@@ -87,7 +87,7 @@ class KanbanSingle(Resource):
     # @ns.marshal_with(kanban) THIS IS RETURNED
     def put(self, kanban_id):
         """Updates name of kanban board with given id"""
-        all_kanbans = glob(f"{directory_creator.kanban_directory}/*",recursive=True)
+        all_kanbans = glob(f"{config.kanban_directory}/*",recursive=True)
         for kanban_directory in all_kanbans:
             info = os.path.split(kanban_directory)
             if str(kanban_id) in info:

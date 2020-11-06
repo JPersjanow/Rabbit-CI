@@ -1,15 +1,13 @@
-from flask import Flask, request, jsonify, Blueprint
-from glob import glob
-import os
-import log
-from directory_creator import DirectoryCreator
-import xmltodict
-from api import api, directory_creator
+from flask import Flask, Blueprint
+from tools.log import setup_custom_logger
+from api import api
 from kanbans_namespace import ns as kanban_namespace
 from issues_namespace import ns as issues_namespace
 app = Flask(__name__)
+logger = setup_custom_logger('api_server')
 
 def initialize_app(flask_app):
+    logger.info("Configuring api server")
     blueprint = Blueprint('api', __name__, url_prefix='/api/v1')
     api.init_app(blueprint)
     api.add_namespace(kanban_namespace)
@@ -17,8 +15,7 @@ def initialize_app(flask_app):
     flask_app.register_blueprint(blueprint)
 
 def main():
-    directory_creator.create_directory_tree()
-    directory_creator.create_fake_kanbans(10)
+    logger.info("Starting api server")
     initialize_app(app)
     app.run(debug='DEBUG')
 
