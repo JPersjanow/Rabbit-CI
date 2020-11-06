@@ -1,12 +1,12 @@
 import xml.etree.cElementTree as ET
-from xml_tools import prettify
+from tools.xml_tools import prettify
 import os
 import sys
-from log import setup_custom_logger
+from tools.log import setup_custom_logger
 
 class ConfigCreator:
     """ Class for creating config file used by all Rabbit infrastructure"""
-    def __init__(self, installation_directory: str, config_directory: str=os.environ['RABBITCONFIG']):
+    def __init__(self, installation_directory: str, config_directory: str):
         self.installation_directory = installation_directory
         self.config_directory = config_directory
         self.logger = setup_custom_logger('config_creator')

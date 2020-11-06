@@ -1,13 +1,11 @@
-from flask_restplus import Resource, reqparse, fields
+from flask_restplus import Resource, fields
+from flask import jsonify
 from glob import glob
 import xmltodict
-from flask import jsonify, request
 import os
-import xml.etree.cElementTree as ET
-from xml.dom import minidom
-from tools.xml_tools import prettify, update_xml_attribute, create_xml_tree_for_kanban_config
-from tools.config_reader import ConfigReader
 
+from tools.xml_tools import update_xml_attribute, create_xml_tree_for_kanban_config
+from tools.config_reader import ConfigReader
 from api import api
 
 ns = api.namespace('resources/kanban', description='Operations related to kanban boards located in management module')

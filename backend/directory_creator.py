@@ -1,11 +1,11 @@
-from glob import glob
 import xml.etree.cElementTree as ET
-from xml.dom import minidom
-import xmltodict
 import os
 import sys
-from tools.log import setup_custom_logger
 import argparse
+from xml.dom import minidom
+
+
+from tools.log import setup_custom_logger
 from tools.xml_tools import prettify
 from tools.config_creator import ConfigCreator
 

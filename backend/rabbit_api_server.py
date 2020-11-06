@@ -1,8 +1,5 @@
-from flask import Flask, request, jsonify, Blueprint
-from glob import glob
-import os
+from flask import Flask, Blueprint
 from tools.log import setup_custom_logger
-import xmltodict
 from api import api
 from kanbans_namespace import ns as kanban_namespace
 
