@@ -15,6 +15,9 @@ def create_xml_tree_for_kanban_config(kanban_name: str, kanban_id: int, descript
         ET.SubElement(info, "name").text = kanban_name
         ET.SubElement(info, "id").text = str(kanban_id)
         ET.SubElement(info, "description").text = description
+        ET.SubElement(root, "todo")
+        ET.SubElement(root, "doing")
+        ET.SubElement(root, "done")
         tree = prettify(root)
         return tree
     except Exception as e:
@@ -24,7 +27,15 @@ def create_xml_tree_for_kanban_config(kanban_name: str, kanban_id: int, descript
 def update_xml_attribute(xml_file: str, attribute_name: str, new_value: str):
     tree = ET.parse(xml_file)
     root = tree.getroot()
+    
     for child in root:
-        child.find(attribute_name).text = new_value
+        if child.find(attribute_name) is not None:
+            child.find(attribute_name).text = new_value
+        
     tree.write(xml_file)
 
+def add_xml_attribute_to_root(xml_file: str, attribute_name: str, attribute_value: str = ""):
+    tree = ET.parse(xml_file)
+    root = tree.getroot()
+    ET.SubElement(root, attribute_name).text = attribute_value
+    tree.write(xml_file)
