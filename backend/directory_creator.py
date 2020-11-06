@@ -2,7 +2,6 @@ import xml.etree.cElementTree as ET
 import os
 import sys
 import argparse
-from xml.dom import minidom
 
 
 from tools.log import setup_custom_logger

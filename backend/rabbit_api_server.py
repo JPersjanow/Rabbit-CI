@@ -7,7 +7,7 @@ app = Flask(__name__)
 logger = setup_custom_logger('api_server')
 
 def initialize_app(flask_app):
-    logger.info("Initializing api server")
+    logger.info("Configuring api server")
     blueprint = Blueprint('api', __name__, url_prefix='/api/v1')
     api.init_app(blueprint)
     api.add_namespace(kanban_namespace)
