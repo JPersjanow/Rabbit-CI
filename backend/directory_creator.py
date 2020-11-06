@@ -4,17 +4,47 @@ from xml.dom import minidom
 import xmltodict
 import os
 import sys
-from log import Logger
+from log import setup_custom_logger
+import argparse
 
 class DirectoryCreator:
-    def __init__(self):
-        self.current_dir = os.getcwd()
-        self.logger = Logger('dir_creator').setup_logger()
+    """ Main class for creating directory strucute for Rabbit-CI """
+    description = 'directory_creator.py is a automation script for creating Rabbit-CI directory structure'
 
-        self.kanban_directory = os.path.join(self.current_dir, 'kanbans')    
+    def __init__(self):
+        args = self._parse_args(args=sys.argv[1:])
+        self.installation_directory = args.installation_directory
+        self.logger = setup_custom_logger('directory_creator')
+
+        self.kanban_directory = os.path.join(self.installation_directory, 'kanbans')
+        self.config_directory = os.path.join(self.installation_directory, 'config') 
+
+        if args.debug == 'enable':
+            self.debug = True
+        else:
+            self.debug = False
+
+        if args.validate_directory == 'enable':
+            self.validate_directory = True
+        else:
+            self.validate_directory = False
+
+    @staticmethod
+    def _parse_args(args: list) -> argparse.Namespace:
+        """
+        Arguments parser
+        :param args: list as taken from sys.argv
+        :return: parsed args
+        """
+        parser = argparse.ArgumentParser(description=DirectoryCreator.description)
+        parser.add_argument('--installation_directory', help="Directory where folder structure will be created", required=True )
+        parser.add_argument('--debug', help="Trun on debug mode. If this mode is enabled, directories will be populated with mock files", choices=['enable', 'disable'], default='disable')
+        parser.add_argument('--validate_directory', help="If this option is enabled, directory creator will only validate if folder structure is proper", choices=['enable', 'disable', default='disable'])
+        parser.add_argument('--exit_on_error', help="If this mode is enabled, directory creator will exit if given directories already exits", choices=['enable', 'disable'], default='disable')
+        return parser.parse_args(args)
 
     def create_directory_tree(self):
-        self.logger.info("Creating directory")
+        self.logger.info(f"Creating directory structure in {self.installation_directory}")
         self.logger.info("Creating kanban directory")
         try:
             os.mkdir(self.kanban_directory, mode=0o777)
@@ -24,7 +54,11 @@ class DirectoryCreator:
         except Exception as e:
             self.logger.exception(e)
 
-        self.logger.info("Creating issues directory")
+        self.logger.info("Creating config directory")
+        try:
+            os.mkdir(self.config_directory, mode=0o777)
+        except FileExistsError:
+            self.logger.warning(f"{} already exists!")
 
     def prettify(self, elem):
         rough_string = ET.tostring(elem, 'utf-8')
