@@ -10,15 +10,13 @@ from tools.xml_tools import prettify, update_xml_attribute, create_xml_tree_for_
 
 from api import api, directory_creator
 
-ns = api.namespace('resources/kanban', description='Operations related to kanban boards located in management module')
+ns = api.namespace('resources/kanbans', description='Operations related to kanban boards located in management module')
 kanban_update_model = api.model('Kanban Update', {
     'name': fields.String(required=True, description='Kanban name')
 })
 kanban_create_model = api.clone('Kanban Creation', kanban_update_model, {
     'description': fields.String(required=True, description='Kanban description')
 })
-
-
 
 @ns.route('/')
 class KanbansAll(Resource):

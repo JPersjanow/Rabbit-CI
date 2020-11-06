@@ -1,7 +1,7 @@
 from flask_restplus import Resource
 from api import api, directory_creator
 
-ns = api.namespace('resources/issue', description='Operations related to issues located in management module')
+ns = api.namespace('resources/issues', description='Operations related to issues located in management module')
 
 @ns.route('/<int:kanban_id>')
 class IssuesAll(Resource):
