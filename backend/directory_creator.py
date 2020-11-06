@@ -14,7 +14,12 @@ class DirectoryCreator:
 
     def __init__(self):
         args = self._parse_args(args=sys.argv[1:])
-        self.installation_directory = args.installation_directory
+        if args.installation_directory != 'default':
+            self.installation_directory = args.installation_directory
+        elif args.installation_directory == 'default':
+            home = os.path.expanduser('~')
+            self.installation_directory = os.path.join(home, 'rabbit')
+
         self.logger = setup_custom_logger('directory_creator')
 
         self.kanban_directory = os.path.join(self.installation_directory, 'kanbans')
@@ -38,17 +43,26 @@ class DirectoryCreator:
         :return: parsed args
         """
         parser = argparse.ArgumentParser(description=DirectoryCreator.description)
-        parser.add_argument('--installation_directory', help="Directory where folder structure will be created", required=True )
+        parser.add_argument('--installation_directory', help="Directory where folder structure will be created, if default is set Rabbit will be installed to user home directory", default='default')
         parser.add_argument('--debug', help="Trun on debug mode. If this mode is enabled, directories will be populated with mock files", choices=['enable', 'disable'], default='disable')
         parser.add_argument('--validate_directory', help="If this option is enabled, directory creator will only validate if folder structure is proper", choices=['enable', 'disable'], default='disable')
         parser.add_argument('--exit_on_error', help="If this mode is enabled, directory creator will exit if given directories already exits", choices=['enable', 'disable'], default='disable')
         return parser.parse_args(args)
 
     def create_directory_tree(self):
+        self.logger.info(f"Creating main directory in {self.installation_directory}")
+        try:
+            os.mkdir(self.installation_directory)
+            self.logger.info(f"Kanban directory created in {self.kanban_directory}")
+        except FileExistsError:
+            self.logger.warning(f"{self.kanban_directory} already exists!")
+        except Exception as e:
+            self.logger.exception(e)
+
         self.logger.info(f"Creating directory structure in {self.installation_directory}")
         self.logger.info("Creating kanban directory")
         try:
-            os.mkdir(self.kanban_directory, mode=0o777)
+            os.mkdir(self.kanban_directory)
             self.logger.info(f"Kanban directory created in {self.kanban_directory}")
         except FileExistsError:
             self.logger.warning(f"{self.kanban_directory} already exists!")
@@ -57,7 +71,7 @@ class DirectoryCreator:
 
         self.logger.info("Creating config directory")
         try:
-            os.mkdir(self.config_directory, mode=0o777)
+            os.mkdir(self.config_directory)
             self.logger.info(f"Config directory created in {self.config_directory}")
             self.logger.info("Setting config directory as environment variable")
             with open(os.path.expanduser('~/.bashrc'), 'a') as outfile:
@@ -87,7 +101,7 @@ class DirectoryCreator:
             self.logger.debug(f"Creating kanban num {i}")
             single_kanban = os.path.join(self.kanban_directory, str(i))
             try:
-                os.mkdir(single_kanban, mode=0o777)
+                os.mkdir(single_kanban)
             except FileExistsError:
                 self.logger.warning(f"{single_kanban} already exists!")
             except Exception as e:
