@@ -2,7 +2,7 @@ import xml.etree.cElementTree as ET
 import os
 from glob import glob
 import xmltodict
-from tools.xml_tools import add_xml_attribute_to_root, prettify
+from tools.xml_tools import prettify
 
 class IssueFinder:
     @staticmethod
