@@ -13,6 +13,6 @@ class KanbanFinder:
                 break
         
         if 'found' in locals():
-            return found
+            return found, True
         else:
-            return ''
+            return '', False
