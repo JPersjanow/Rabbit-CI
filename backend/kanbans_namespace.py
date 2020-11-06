@@ -6,6 +6,7 @@ import os
 
 from tools.xml_tools import update_xml_attribute, create_xml_tree_for_kanban_config
 from tools.config_reader import ConfigReader
+from tools.kanbans_tools import KanbanFinder
 from api import api
 
 ns = api.namespace('resources/kanbans', description='Operations related to kanban boards located in management module')
@@ -16,6 +17,7 @@ kanban_create_model = api.clone('Kanban Creation', kanban_update_model, {
     'description': fields.String(required=True, description='Kanban description')
 })
 
+# Config file reader (from env variable)
 config = ConfigReader()
 
 @ns.route('/')
@@ -23,7 +25,7 @@ class KanbansAll(Resource):
     @api.response(200, "Kanban boards fetched")
     def get(self):
         """Returns all kanban boards with info"""
-        all_kanbans = glob(f"{config.kanban_directory}/*",recursive=True)
+        all_kanbans = glob(f"{config.kanbans_directory}/*",recursive=True)
         all_kanbans_info_list = []
         print(all_kanbans)
         for single_kanban_dir in all_kanbans:
@@ -41,9 +43,9 @@ class KanbansAll(Resource):
     @api.response(500, "Kanban could not be created")
     def post(self):
         """Create new kanban"""
-        all_kanbans = glob(f"{config.kanban_directory}/*",recursive=True)
+        all_kanbans = glob(f"{config.kanbans_directory}/*",recursive=True)
         try:
-            new_kanban_dir = os.path.join(config.kanban_directory, str(len(all_kanbans) + 1))
+            new_kanban_dir = os.path.join(config.kanbans_directory, str(len(all_kanbans) + 1))
             os.mkdir(new_kanban_dir,  mode=0o777)
         except FileExistsError:
             return {"response": "Kanban could not be created! Kanban already exists"}, 500
@@ -67,14 +69,11 @@ class KanbanSingle(Resource):
     @api.response(404, "Kanban board with id not found")
     def get(self, kanban_id):
         """Returns kanban board with given id"""
-        all_kanbans = glob(f"{config.kanban_directory}/*",recursive=True)
-        for kanban_directory in all_kanbans:
-            info = os.path.split(kanban_directory)
-            if str(kanban_id) in info:
-                found = kanban_directory
-                break
-        if 'found' in locals():
-            kanban_config_file = os.path.join(found, "config.xml")
+        kanban_finder = KanbanFinder()
+        kanban_directory, kanban_found = kanban_finder.find_kanban_dir_with_id(kanban_id=kanban_id, kanbans_directory=config.kanbans_directory)
+        
+        if kanban_found:
+            kanban_config_file = os.path.join(kanban_directory, "config.xml")
             with open(kanban_config_file) as xml_file:
                 kanban_info_list = xmltodict.parse(xml_file.read())
             response = jsonify(kanban_info_list)
@@ -83,23 +82,31 @@ class KanbanSingle(Resource):
         else:
             return {"response": f"Kanban board with id {kanban_id} not found"}, 404
 
-    @ns.expect(kanban_update_model)
+    @ns.expect(kanban_create_model)
     # @ns.marshal_with(kanban) THIS IS RETURNED
     def put(self, kanban_id):
         """Updates name of kanban board with given id"""
-        all_kanbans = glob(f"{config.kanban_directory}/*",recursive=True)
-        for kanban_directory in all_kanbans:
-            info = os.path.split(kanban_directory)
-            if str(kanban_id) in info:
-                found = kanban_directory
-                break
-        
-        if 'found' in locals():
-            print(os.path.join(found, 'config.xml'))
-            config_file_dir = os.path.join(found, 'config.xml')
-            update_xml_attribute(config_file_dir, 'name', api.payload['name'])
+        kanban_finder = KanbanFinder()
+        kanban_directory, kanban_found = kanban_finder.find_kanban_dir_with_id(kanban_id=kanban_id, kanbans_directory=config.kanbans_directory)
+        print(kanban_directory)
+        response = dict()
+        if kanban_found:
+            config_file_dir = os.path.join(kanban_directory, 'config.xml')
+            print(config_file_dir)
+            try:
+                if api.payload['name'] != 'string':
+                    update_xml_attribute(config_file_dir, 'name', api.payload['name'])
+                    response["response_name"] = f"Updated with {api.payload['name']}"
+                if api.payload['description'] != 'string':
+                    update_xml_attribute(config_file_dir, 'description', api.payload['description'])
+                    response["response_desc"] = f"Updated with {api.payload['description']}"
+            except KeyError:
+                return {"response": "Wrong key! Use given model"}, 404
+            
 
-            return {"response": f"Updated with {api.payload['name']}"}
+            del(kanban_finder)
+            return response, 201
 
         else:
+            del(kanban_finder)
             return {"response": f"Kanban board with id {kanban_id} not found"}, 404

@@ -68,7 +68,7 @@ class DirectoryCreator:
             self.logger.exception(e)
 
     def create_config_file(self):
-        cfg_creator = ConfigCreator(installation_directory=self.installation_directory, config_directory=self.config_directory)
+        cfg_creator = ConfigCreator(installation_directory=self.installation_directory, config_directory=self.config_directory, kanbans_directory=self.kanban_directory)
         cfg_creator.create_config_file()
 
     def run(self):
@@ -111,7 +111,7 @@ class DirectoryCreator:
                 self.logger.exception(e)
     
     def create_fake_issues(self, num_issues: int, kanban_id: int):
-        pass
+        self.logger.debug("Creating fake issues!")
 
 if __name__ == '__main__':
     dc = DirectoryCreator()
