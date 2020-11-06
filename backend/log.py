@@ -1,25 +1,24 @@
 import logging
+import os
 
-class Logger:
-    def __init__(self, name: str):
-        self.name = name
 
-    def setup_logger(self):
-        # create logger
-        logger = logging.getLogger(self.name)
-        logger.setLevel(logging.DEBUG)
+def setup_custom_logger(name):
+    formatter = logging.Formatter(fmt='%(asctime)s - %(levelname)s - %(module)s:%(lineno)s - %(message)s')
 
-        # create console handler and set level to debug
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
+    # uncomment to get log entries in the console
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
 
-        # create formatter
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    try:
+        os.remove("RabbitFramework.log")
+    except OSError:
+        pass
+    file_handler = logging.FileHandler("RabbitFramework.log")
+    file_handler.setFormatter(formatter)
+    file_handler.setLevel(logging.DEBUG)
 
-        # add formatter to ch
-        ch.setFormatter(formatter)
-
-        # add ch to logger
-        logger.addHandler(ch)
-
-        return logger
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(handler)
+    logger.addHandler(file_handler)
+    return logger
