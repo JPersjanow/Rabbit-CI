@@ -5,6 +5,7 @@ from api import api
 from tools.issues_tools import IssueCreator, IssueFinder
 from tools.kanbans_tools import KanbanFinder
 from tools.config_reader import ConfigReader
+from tools.xml_tools import update_xml_attribute
 
 ns = api.namespace('resources/kanbans/', description='Operations related to issues located in management module')
 issue_model = api.model('Issue Model', {
@@ -18,7 +19,7 @@ config = ConfigReader()
 @ns.route('/<int:kanban_id>/issues')
 class IssuesAll(Resource):
     @api.response(200, "Issues for kanban board fetched")
-    @api.response(404, "Unable to fetch issues")
+    @api.response(500, "Unable to fetch issues")
     def get(self, kanban_id):
         """ Return all issues info for given kanban board """
         kanban_finder = KanbanFinder()
@@ -61,11 +62,58 @@ class IssuesAll(Resource):
 
 @ns.route('/<int:kanban_id>/issues/<string:issue_name>')
 class IssueSingle(Resource):
+
+    @api.response(200, "Issues for kanban board fetched")
+    @api.response(404, "Issue not found")
+    @api.response(500, "Unable to fetch issues")
     def get(self, kanban_id, issue_name):
         """ Return specific issue info with given name for given kanban board """
-        return {"response": "OK"}, 200
+        issue_finder = IssueFinder()
+        try:
+            issue_directory, issue_found = issue_finder.return_specific_issue_for_kanban(kanbans_directory=config.kanbans_directory, kanban_id=kanban_id, issue_name=issue_name)
+            if issue_found:
+                issue_info_list = issue_finder.return_issue_info(issue_directory=issue_directory)
+                response = jsonify(issue_info_list)
+                response.headers.add("Access-Control-Allow-Origin", "*")
+                del(issue_finder)
+                return response
+            else:
+                del(issue_finder)
+                return {"response": f"Issue with name {issue_name} not found!"}, 404
+        except Exception as e:
+            return {"response": "Unable to fetch issue!", "exception": str(e)}
 
+    @api.response(200, "Issues updated")
+    @api.response(404, "Issue not found")
+    @api.response(500, "Unable update issue")
     @ns.expect(issue_model)
     def put(self, kanban_id, issue_name):
-        return {"response": "OK"}, 200
+        response = dict()
+        issue_finder = IssueFinder()
+        issue_creator = IssueCreator()
+        issue_directory, issue_found = issue_finder.return_specific_issue_for_kanban(kanbans_directory=config.kanbans_directory, kanban_id=kanban_id, issue_name=issue_name)
+
+        if issue_found:
+            try:
+                if api.payload['name'] != 'string':
+                    update_xml_attribute(issue_directory, 'name', api.payload['name'])
+                    issue_creator.rename_issue(issue_directory, issue_name, api.payload['name'])
+                    response["response_name"] = f"Updated with {api.payload['name']}"
+                if api.payload['description'] != 'string':
+                    update_xml_attribute(issue_directory, 'description', api.payload['description'])
+                    response["response_desc"] = f"Updated with {api.payload['description']}"
+                if api.payload['creator'] != 'string':
+                    update_xml_attribute(issue_directory, 'creator', api.payload['creator'])
+                    response["response_desc"] = f"Updated with {api.payload['creator']}"
+            except KeyError:
+                return {"response": "Wrong key! Use given model"}, 500
+            except Exception as e:
+                return {"response": "Wrong key! Use given model"}, 500
+            finally:
+                del(issue_finder)
+            
+            return response, 201
+        else:
+            del(issue_finder)
+            return {"response": f"Issue with name {issue_name} not found!"}, 404
     

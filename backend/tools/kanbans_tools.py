@@ -9,7 +9,7 @@ from tools.xml_tools import prettify
 class KanbanFinder:
     """ Class consisting of methods for finding and returning specific kanban info """
     @staticmethod
-    def find_kanban_dir_with_id(kanban_id: int, kanbans_directory: str) -> str:
+    def find_kanban_dir_with_id(kanban_id: int, kanbans_directory: str) -> Tuple[str, bool]:
         """Returns directory as string, if direcotry not found return empty string"""
         all_kanbans = glob(os.path.join(kanbans_directory, '*'), recursive=True)
         for kanban_directory in all_kanbans:
