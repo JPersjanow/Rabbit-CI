@@ -2,6 +2,7 @@ import xml.etree.cElementTree as ET
 import os
 from glob import glob
 import xmltodict
+from datetime import datetime
 from tools.xml_tools import prettify
 
 class IssueFinder:
@@ -48,19 +49,18 @@ class IssueCreator:
             raise FileExistsError("Issue already exists!")
 
     @staticmethod
-    def create_xml_tree_for_issue_config(issue_name: str, kanban_id: int, issue_description: str = ""):
+    def create_xml_tree_for_issue_config(issue_name: str, kanban_id: int, issue_description: str = "", creator: str = "anonymous"):
         """Method for creating xml tree for issue config"""
+        date = datetime.date(datetime.now())
         try:
             root = ET.Element("issue")
             ET.SubElement(root, "name").text = issue_name
             ET.SubElement(root, "kanban_id").text = str(kanban_id)
             ET.SubElement(root, "description").text = issue_description
+            ET.SubElement(root, "creator").text = creator
+            ET.SubElement(root, "creation_date").text = str(date)
             tree = prettify(root)
             return tree
         except Exception as e:
             print(e)
             return None
-
-if __name__ == '__main__':
-    issue_finder = IssueFinder()
-    all_issues = issue_finder.return_all_issues_info_for_kanban(kanbans_directory='/home/persil/rabbit/kanbans', kanban_id=1)

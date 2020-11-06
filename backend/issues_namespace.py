@@ -3,9 +3,10 @@ from flask import jsonify
 from api import api
 
 from tools.issues_tools import IssueCreator, IssueFinder
+from tools.kanbans_tools import KanbanFinder
 from tools.config_reader import ConfigReader
 
-ns = api.namespace('resources/issues', description='Operations related to issues located in management module')
+ns = api.namespace('resources/kanbans/', description='Operations related to issues located in management module')
 issue_model = api.model('Issue Model', {
     'name': fields.String(required=True, description='Issue name'),
     'description': fields.String(required=False, description='Issue description'),
@@ -14,22 +15,28 @@ issue_model = api.model('Issue Model', {
 
 config = ConfigReader()
 
-@ns.route('/<int:kanban_id>')
+@ns.route('/<int:kanban_id>/issues')
 class IssuesAll(Resource):
     @api.response(200, "Issues for kanban board fetched")
     @api.response(404, "Unable to fetch issues")
     def get(self, kanban_id):
         """ Return all issues info for given kanban board """
-        issue_finder = IssueFinder()
-        try:
-            all_issues_info_list = issue_finder.return_all_issues_info_for_kanban(kanbans_directory=config.kanbans_directory, kanban_id=kanban_id)
-            response = jsonify(all_issues_info_list)
-            response.headers.add("Access-Control-Allow-Origin", "*")
-            return response
-        except Exception as e:
-            return {"response": "Couldn't fetch issues", "exception": str(e)}, 500
-        finally:
-            del(issue_finder)
+        kanban_finder = KanbanFinder()
+        kanban_directory, kanban_check = kanban_finder.find_kanban_dir_with_id(kanban_id=kanban_id, kanbans_directory=config.kanbans_directory)
+        if kanban_check:
+            issue_finder = IssueFinder()
+            try:
+                all_issues_info_list = issue_finder.return_all_issues_info_for_kanban(kanbans_directory=config.kanbans_directory, kanban_id=kanban_id)
+                response = jsonify(all_issues_info_list)
+                response.headers.add("Access-Control-Allow-Origin", "*")
+                return response
+            except Exception as e:
+                return {"response": "Couldn't fetch issues", "exception": str(e)}, 500
+            finally:
+                del(issue_finder)
+        else:
+            del(kanban_finder)
+            return {"response": "Couldn't fetch issues", "exception": f"Kanban with id {kanban_id} not found"}
 
     @ns.expect(issue_model)
     @api.response(201, "Issue has been created")
@@ -37,7 +44,7 @@ class IssuesAll(Resource):
     def post(self, kanban_id):
         """ Create new issue for given kanban board """
         issue_creator = IssueCreator()
-        issue_xml_tree = issue_creator.create_xml_tree_for_issue_config(issue_name=api.payload['name'], kanban_id=kanban_id, issue_description=api.payload['description'])
+        issue_xml_tree = issue_creator.create_xml_tree_for_issue_config(issue_name=api.payload['name'], kanban_id=kanban_id, issue_description=api.payload['description'], creator=api.payload['creator'])
         try:
             issues_directory = issue_creator.create_issues_folder(kanbans_directory=config.kanbans_directory, kanban_id=kanban_id)
         except Exception as e:
@@ -52,7 +59,7 @@ class IssuesAll(Resource):
 
         
 
-@ns.route('/<int:kanban_id>/<string:issue_name>')
+@ns.route('/<int:kanban_id>/issues/<string:issue_name>')
 class IssueSingle(Resource):
     def get(self, kanban_id, issue_name):
         """ Return specific issue info with given name for given kanban board """
