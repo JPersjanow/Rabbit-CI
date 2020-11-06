@@ -41,7 +41,7 @@ class DirectoryCreator:
         parser = argparse.ArgumentParser(description=DirectoryCreator.description)
         parser.add_argument('--installation_directory', help="Directory where folder structure will be created", required=True )
         parser.add_argument('--debug', help="Trun on debug mode. If this mode is enabled, directories will be populated with mock files", choices=['enable', 'disable'], default='disable')
-        parser.add_argument('--validate_directory', help="If this option is enabled, directory creator will only validate if folder structure is proper", choices=['enable', 'disable', default='disable'])
+        parser.add_argument('--validate_directory', help="If this option is enabled, directory creator will only validate if folder structure is proper", choices=['enable', 'disable'], default='disable')
         parser.add_argument('--exit_on_error', help="If this mode is enabled, directory creator will exit if given directories already exits", choices=['enable', 'disable'], default='disable')
         return parser.parse_args(args)
 
@@ -79,7 +79,7 @@ class DirectoryCreator:
 
         if self.debug:
             self.create_fake_kanbans(num_kanbans=10)
-            self.create_fake_issues()
+            self.create_fake_issues(10, 1)
 
     ### DEBUG METHODS ###
     def create_fake_kanbans(self, num_kanbans: int):
@@ -113,3 +113,7 @@ class DirectoryCreator:
     
     def create_fake_issues(self, num_issues: int, kanban_id: int):
         pass
+
+if __name__ == '__main__':
+    dc = DirectoryCreator()
+    dc.run()

@@ -2,9 +2,8 @@ from flask import Flask, request, jsonify, Blueprint
 from glob import glob
 import os
 from tools.log import setup_custom_logger
-from directory_creator import DirectoryCreator
 import xmltodict
-from api import api, directory_creator
+from api import api
 from kanbans_namespace import ns as kanban_namespace
 
 app = Flask(__name__)
