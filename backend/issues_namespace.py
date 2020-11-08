@@ -2,7 +2,7 @@ from flask_restplus import Resource, fields
 from flask import jsonify
 from api import api
 
-from tools.issues_tools import IssueCreator, IssueFinder
+from tools.issues_tools import IssueCreator, IssueFinder, IssueDeleter
 from tools.kanbans_tools import KanbanFinder
 from tools.config_reader import ConfigReader
 from tools.xml_tools import update_xml_attribute
@@ -170,3 +170,22 @@ class IssueSingle(Resource):
         else:
             del issue_finder
             return {"response": f"Issue with name {issue_name} not found!"}, 404
+
+    @api.response(200, "Issue deleted")
+    @api.response(404, "Issue not found")
+    @api.response(500, "Unable to delete issue")
+    def delete(self, kanban_id, issue_name):
+        try:
+            issue_deleter = IssueDeleter()
+            issue_deleter.delete_issue(
+                kanbans_directory=config.kanbans_directory,
+                kanban_id=kanban_id,
+                issue_name=issue_name,
+            )
+            return {"response": "Issue deleted"}, 200
+        except FileNotFoundError:
+            return {"response": "Issue coulnd't be found"}, 404
+        except Exception as e:
+            return {"response": "Couldn't delete issue", "exception": str(e)}, 500
+        finally:
+            del issue_deleter

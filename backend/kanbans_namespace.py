@@ -4,7 +4,7 @@ import os
 
 from tools.xml_tools import update_xml_attribute
 from tools.config_reader import ConfigReader
-from tools.kanbans_tools import KanbanFinder, KanbanCreator
+from tools.kanbans_tools import KanbanFinder, KanbanCreator, KanbanDeleter
 from api import api
 
 ns = api.namespace(
@@ -137,3 +137,18 @@ class KanbanSingle(Resource):
         else:
             del kanban_finder
             return {"response": f"Kanban board with id {kanban_id} not found"}, 404
+
+    @api.response(200, "Kanban deleted")
+    @api.response(404, "Kanban not found")
+    @api.response(500, "Unable to delte kanban")
+    def delete(self, kanban_id):
+        try:
+            kanban_deleter = KanbanDeleter()
+            kanban_deleter.delete_kanban(
+                kanbans_directory=config.kanbans_directory, kanban_id=kanban_id
+            )
+            return {"response": "Kanban deleted"}, 200
+        except FileNotFoundError:
+            return {"response": "Kanban coulnd't be found"}, 404
+        except Exception as e:
+            return {"response": "Couldn't delete kanban", "exception": str(e)}, 500
