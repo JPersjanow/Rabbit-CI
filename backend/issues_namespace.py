@@ -28,6 +28,7 @@ config = ConfigReader()
 @ns.route("/<int:kanban_id>/issues")
 class IssuesAll(Resource):
     """ Endpoints for issues """
+
     @api.response(200, "Issues for kanban board fetched")
     @api.response(500, "Unable to fetch issues")
     def get(self, kanban_id):
@@ -92,6 +93,7 @@ class IssuesAll(Resource):
 @ns.route("/<int:kanban_id>/issues/<string:issue_name>")
 class IssueSingle(Resource):
     """ Endpoints for specifig issues """
+
     @api.response(200, "Issues for kanban board fetched")
     @api.response(404, "Issue not found")
     @api.response(500, "Unable to fetch issues")

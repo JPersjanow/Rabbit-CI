@@ -26,6 +26,7 @@ config = ConfigReader()
 @ns.route("/")
 class KanbansAll(Resource):
     """ Endpoints for kanbans """
+
     @api.response(200, "Kanban boards fetched")
     @api.response(500, "Could not fetch Kanban boards info")
     def get(self):
@@ -87,6 +88,7 @@ class KanbansAll(Resource):
 @ns.route("/<int:kanban_id>")
 class KanbanSingle(Resource):
     """ Endpoints for specific kanbans """
+
     @api.response(200, "Kanban board found")
     @api.response(404, "Kanban board with id not found")
     def get(self, kanban_id):

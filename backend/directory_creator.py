@@ -43,7 +43,9 @@ class DirectoryCreator:
         return platform.system()
 
     @staticmethod
-    def set_installation_directory(installation_dir_arg: str, default_attribute: str) -> str:
+    def set_installation_directory(
+        installation_dir_arg: str, default_attribute: str
+    ) -> str:
         if installation_dir_arg != default_attribute:
             return installation_dir_arg
         elif installation_dir_arg == default_attribute:
@@ -165,6 +167,7 @@ class DirectoryCreator:
                     file.write(tree)
             except Exception as e:
                 self.logger.exception(e)
+
 
 if __name__ == "__main__":
     dc = DirectoryCreator()

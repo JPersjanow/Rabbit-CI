@@ -1,6 +1,7 @@
 import xml.etree.cElementTree as ET
 from xml.dom import minidom
 
+
 def prettify(elem):
     """Method for prettyfying xml files"""
     rough_string = ET.tostring(elem, "utf-8")
