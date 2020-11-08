@@ -37,3 +37,5 @@ class ConfigCreator:
                 file.write(tree)
         except Exception as e:
             self.logger.exception(e)
+
+        self.logger.info(f"Config file created inside {self.config_directory}")

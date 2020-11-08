@@ -1,7 +1,9 @@
 import xml.etree.cElementTree as ET
+from pathlib import Path
 import os
 import sys
 import argparse
+import platform
 
 
 from tools.log import setup_custom_logger
@@ -16,11 +18,10 @@ class DirectoryCreator:
 
     def __init__(self):
         args = self._parse_args(args=sys.argv[1:])
-        if args.installation_directory != "default":
-            self.installation_directory = args.installation_directory
-        elif args.installation_directory == "default":
-            home = os.path.expanduser("~")
-            self.installation_directory = os.path.join(home, "rabbit")
+        self.platform = self.check_platform()
+        self.installation_directory = self.set_installation_directory(
+            args.installation_directory, "default"
+        )
 
         self.logger = setup_custom_logger("directory_creator")
 
@@ -36,6 +37,18 @@ class DirectoryCreator:
             self.validate_directory = True
         else:
             self.validate_directory = False
+
+    @staticmethod
+    def check_platform() -> str:
+        return platform.system()
+
+    @staticmethod
+    def set_installation_directory(installation_dir_arg: str, default_attribute: str):
+        if installation_dir_arg != default_attribute:
+            return installation_dir_arg
+        elif installation_dir_arg == default_attribute:
+            home = str(Path.home())
+            return os.path.join(home, "rabbit")
 
     @staticmethod
     def _parse_args(args: list) -> argparse.Namespace:
@@ -97,12 +110,20 @@ class DirectoryCreator:
             os.mkdir(self.config_directory)
             self.logger.info(f"Config directory created in {self.config_directory}")
             self.logger.info("Setting config directory as environment variable")
-            with open(os.path.expanduser("~/.bashrc"), "a") as outfile:
-                outfile.write(f"export RABBITCONFIG={self.config_directory}")
+            self.set_config_env_variable()
         except FileExistsError:
             self.logger.warning(f"{self.config_directory} already exists!")
         except Exception as e:
             self.logger.exception(e)
+
+    def set_config_env_variable(self):
+        if self.platform == "Linux":
+            self.logger.info("Linux platform detected")
+            with open(os.path.expanduser("~/.bashrc"), "a") as outfile:
+                outfile.write(f"export RABBITCONFIG={self.config_directory}")
+        elif self.platform == "Windows":
+            self.logger.info("Windows platform detected")
+            os.environ["RABBITCONFIG"] = self.installation_directory
 
     def create_config_file(self):
         cfg_creator = ConfigCreator(
@@ -140,11 +161,6 @@ class DirectoryCreator:
                 info = ET.SubElement(root, "info")
                 ET.SubElement(info, "name").text = f"kanban_{str(i)}"
                 ET.SubElement(info, "id").text = f"{str(i)}"
-                # for j in range(10):
-                #     issues = ET.SubElement(info, "issues")
-                #     ET.SubElement(issues, "name").text = f"ISS-{j}"
-                #     ET.SubElement(issues, "creation_date").text = f"03/11/2020"
-                #     ET.SubElement(issues, "id").text = str(j)
                 tree = prettify(root)
                 with open(os.path.join(single_kanban, "config.xml"), "w+") as file:
                     file.write(tree)
