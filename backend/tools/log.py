@@ -3,8 +3,10 @@ import os
 
 
 def setup_custom_logger(name):
-    formatter = logging.Formatter(fmt='%(asctime)s - %(levelname)s - %(module)s:%(lineno)s - %(message)s')
-    
+    formatter = logging.Formatter(
+        fmt="%(asctime)s - %(levelname)s - %(module)s:%(lineno)s - %(message)s"
+    )
+
     # uncomment to get log entries in the console
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
