@@ -75,7 +75,6 @@ class IssueCreator:
 
     @staticmethod
     def rename_issue(issue_directory: str, issue_name: str, new_issue_name: str):
-        issue_directory = issue_directory
         new_issue_directory = issue_directory.replace(issue_name, f'{new_issue_name}.xml')
         os.rename(issue_directory, new_issue_directory)
 
