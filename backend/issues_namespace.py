@@ -37,7 +37,7 @@ class IssuesAll(Resource):
                 del(issue_finder)
         else:
             del(kanban_finder)
-            return {"response": "Couldn't fetch issues", "exception": f"Kanban with id {kanban_id} not found"}
+            return {"response": "Couldn't fetch issues", "exception": f"Kanban with id {kanban_id} not found"}, 404
 
     @ns.expect(issue_model)
     @api.response(201, "Issue has been created")
@@ -88,6 +88,7 @@ class IssueSingle(Resource):
     @api.response(500, "Unable update issue")
     @ns.expect(issue_model)
     def put(self, kanban_id, issue_name):
+        """ Updates specific issue with given attributes """
         response = dict()
         issue_finder = IssueFinder()
         issue_creator = IssueCreator()
@@ -108,7 +109,7 @@ class IssueSingle(Resource):
             except KeyError:
                 return {"response": "Wrong key! Use given model"}, 500
             except Exception as e:
-                return {"response": "Wrong key! Use given model"}, 500
+                return {"response": "Couldn't update issue", "exception": e}, 500
             finally:
                 del(issue_finder)
             
