@@ -10,7 +10,7 @@ def setup_custom_logger(name):
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
 
-    file_handler = logging.FileHandler(f"rabbit.log")
+    file_handler = logging.FileHandler("rabbit.log")
     file_handler_custom = logging.FileHandler(f"{name}.log")
     file_handler.setFormatter(formatter)
     file_handler_custom.setFormatter(formatter)

@@ -51,6 +51,8 @@ class KanbanFinder:
 
 
 class KanbanCreator:
+    """ Class consisting of methods for creating kanban boards objects """
+
     @staticmethod
     def create_new_kanban_folder(kanbans_directory: str) -> Tuple[str, int]:
         """ Creates new kanban folder and returns new directory with new kanban id """
@@ -85,7 +87,6 @@ class KanbanCreator:
             tree = prettify(root)
             return tree
         except Exception as e:
-            print(e)
             return None
 
 

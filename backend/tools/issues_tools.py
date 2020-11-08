@@ -1,13 +1,16 @@
-import xml.etree.cElementTree as ET
-import os
 from glob import glob
 from typing import Tuple
-import xmltodict
 from datetime import datetime
+import xml.etree.cElementTree as ET
+import os
+import xmltodict
+
 from tools.xml_tools import prettify
 
 
 class IssueFinder:
+    """ Class consisting of methods for finding and returning specific issue info """
+
     @staticmethod
     def return_all_issues_info_for_kanban(
         kanbans_directory: str, kanban_id: int
@@ -63,6 +66,8 @@ class IssueFinder:
 
 
 class IssueCreator:
+    """ Class consisting of methods for creating issue objects """
+
     @staticmethod
     def create_issues_folder(kanbans_directory: str, kanban_id: int) -> str:
         kanban_directory = os.path.join(kanbans_directory, str(kanban_id))

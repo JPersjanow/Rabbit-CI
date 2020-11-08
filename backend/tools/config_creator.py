@@ -1,7 +1,8 @@
 import xml.etree.cElementTree as ET
-from tools.xml_tools import prettify
 import os
 import sys
+
+from tools.xml_tools import prettify
 from tools.log import setup_custom_logger
 
 
