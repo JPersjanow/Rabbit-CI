@@ -41,7 +41,6 @@ class KanbansAll(Resource):
         except Exception as e:
             return {"response": f"Kanbans couldn't be fetched! {e}"}, 500
 
-        del kanban_finder
         return response
 
     @ns.expect(kanban_model)
@@ -129,13 +128,10 @@ class KanbanSingle(Resource):
                     ] = f"Updated with {api.payload['description']}"
             except KeyError:
                 return {"response": "Wrong key! Use given model"}, 404
-            finally:
-                del kanban_finder
 
             return response, 201
 
         else:
-            del kanban_finder
             return {"response": f"Kanban board with id {kanban_id} not found"}, 404
 
     @api.response(200, "Kanban deleted")

@@ -46,10 +46,7 @@ class IssuesAll(Resource):
                 return response
             except Exception as e:
                 return {"response": "Couldn't fetch issues", "exception": str(e)}, 500
-            finally:
-                del issue_finder
         else:
-            del kanban_finder
             return {
                 "response": "Couldn't fetch issues",
                 "exception": f"Kanban with id {kanban_id} not found",
@@ -72,7 +69,6 @@ class IssuesAll(Resource):
                 kanbans_directory=config.kanbans_directory, kanban_id=kanban_id
             )
         except Exception as e:
-            del issue_creator
             return {
                 "response": "Unable to create issues directory!",
                 "exception": str(e),
@@ -89,7 +85,6 @@ class IssuesAll(Resource):
                 "response": f"Issue with name {api.payload['name']} for kanban with id {kanban_id} created!"
             }, 201
         except Exception as e:
-            del issue_creator
             return {"response": "Unable to create new issue!", "exception": str(e)}, 500
 
 
@@ -116,10 +111,8 @@ class IssueSingle(Resource):
                 )
                 response = jsonify(issue_info_list)
                 response.headers.add("Access-Control-Allow-Origin", "*")
-                del issue_finder
                 return response
             else:
-                del issue_finder
                 return {"response": f"Issue with name {issue_name} not found!"}, 404
         except Exception as e:
             return {"response": "Unable to fetch issue!", "exception": str(e)}
@@ -163,12 +156,9 @@ class IssueSingle(Resource):
                 return {"response": "Wrong key! Use given model"}, 500
             except Exception as e:
                 return {"response": "Couldn't update issue", "exception": e}, 500
-            finally:
-                del issue_finder
 
             return response, 201
         else:
-            del issue_finder
             return {"response": f"Issue with name {issue_name} not found!"}, 404
 
     @api.response(200, "Issue deleted")
@@ -187,5 +177,3 @@ class IssueSingle(Resource):
             return {"response": "Issue coulnd't be found"}, 404
         except Exception as e:
             return {"response": "Couldn't delete issue", "exception": str(e)}, 500
-        finally:
-            del issue_deleter
