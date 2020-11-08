@@ -8,29 +8,31 @@ from tools.log import setup_custom_logger
 from tools.xml_tools import prettify
 from tools.config_creator import ConfigCreator
 
+
 class DirectoryCreator:
     """ Main class for creating directory strucute for Rabbit-CI """
-    description = 'directory_creator.py is a automation script for creating Rabbit-CI directory structure'
+
+    description = "directory_creator.py is a automation script for creating Rabbit-CI directory structure"
 
     def __init__(self):
         args = self._parse_args(args=sys.argv[1:])
-        if args.installation_directory != 'default':
+        if args.installation_directory != "default":
             self.installation_directory = args.installation_directory
-        elif args.installation_directory == 'default':
-            home = os.path.expanduser('~')
-            self.installation_directory = os.path.join(home, 'rabbit')
+        elif args.installation_directory == "default":
+            home = os.path.expanduser("~")
+            self.installation_directory = os.path.join(home, "rabbit")
 
-        self.logger = setup_custom_logger('directory_creator')
+        self.logger = setup_custom_logger("directory_creator")
 
-        self.kanban_directory = os.path.join(self.installation_directory, 'kanbans')
-        self.config_directory = os.path.join(self.installation_directory, 'config') 
+        self.kanban_directory = os.path.join(self.installation_directory, "kanbans")
+        self.config_directory = os.path.join(self.installation_directory, "config")
 
-        if args.debug == 'enable':
+        if args.debug == "enable":
             self.debug = True
         else:
             self.debug = False
 
-        if args.validate_directory == 'enable':
+        if args.validate_directory == "enable":
             self.validate_directory = True
         else:
             self.validate_directory = False
@@ -43,10 +45,29 @@ class DirectoryCreator:
         :return: parsed args
         """
         parser = argparse.ArgumentParser(description=DirectoryCreator.description)
-        parser.add_argument('--installation_directory', help="Directory where folder structure will be created, if default is set Rabbit will be installed to user home directory", default='default')
-        parser.add_argument('--debug', help="Trun on debug mode. If this mode is enabled, directories will be populated with mock files", choices=['enable', 'disable'], default='disable')
-        parser.add_argument('--validate_directory', help="If this option is enabled, directory creator will only validate if folder structure is proper", choices=['enable', 'disable'], default='disable')
-        parser.add_argument('--exit_on_error', help="If this mode is enabled, directory creator will exit if given directories already exits", choices=['enable', 'disable'], default='disable')
+        parser.add_argument(
+            "--installation_directory",
+            help="Directory where folder structure will be created, if default is set Rabbit will be installed to user home directory",
+            default="default",
+        )
+        parser.add_argument(
+            "--debug",
+            help="Trun on debug mode. If this mode is enabled, directories will be populated with mock files",
+            choices=["enable", "disable"],
+            default="disable",
+        )
+        parser.add_argument(
+            "--validate_directory",
+            help="If this option is enabled, directory creator will only validate if folder structure is proper",
+            choices=["enable", "disable"],
+            default="disable",
+        )
+        parser.add_argument(
+            "--exit_on_error",
+            help="If this mode is enabled, directory creator will exit if given directories already exits",
+            choices=["enable", "disable"],
+            default="disable",
+        )
         return parser.parse_args(args)
 
     def create_directory_tree(self):
@@ -59,7 +80,9 @@ class DirectoryCreator:
         except Exception as e:
             self.logger.exception(e)
 
-        self.logger.info(f"Creating directory structure in {self.installation_directory}")
+        self.logger.info(
+            f"Creating directory structure in {self.installation_directory}"
+        )
         self.logger.info("Creating kanban directory")
         try:
             os.mkdir(self.kanban_directory)
@@ -74,15 +97,19 @@ class DirectoryCreator:
             os.mkdir(self.config_directory)
             self.logger.info(f"Config directory created in {self.config_directory}")
             self.logger.info("Setting config directory as environment variable")
-            with open(os.path.expanduser('~/.bashrc'), 'a') as outfile:
-                outfile.write(f'export RABBITCONFIG={self.config_directory}')
+            with open(os.path.expanduser("~/.bashrc"), "a") as outfile:
+                outfile.write(f"export RABBITCONFIG={self.config_directory}")
         except FileExistsError:
             self.logger.warning(f"{self.config_directory} already exists!")
         except Exception as e:
             self.logger.exception(e)
 
     def create_config_file(self):
-        cfg_creator = ConfigCreator(installation_directory=self.installation_directory, config_directory=self.config_directory, kanbans_directory=self.kanban_directory)
+        cfg_creator = ConfigCreator(
+            installation_directory=self.installation_directory,
+            config_directory=self.config_directory,
+            kanbans_directory=self.kanban_directory,
+        )
         cfg_creator.create_config_file()
 
     def run(self):
@@ -119,14 +146,15 @@ class DirectoryCreator:
                 #     ET.SubElement(issues, "creation_date").text = f"03/11/2020"
                 #     ET.SubElement(issues, "id").text = str(j)
                 tree = prettify(root)
-                with open(os.path.join(single_kanban,"config.xml"), "w+") as file:
+                with open(os.path.join(single_kanban, "config.xml"), "w+") as file:
                     file.write(tree)
             except Exception as e:
                 self.logger.exception(e)
-    
+
     def create_fake_issues(self, num_issues: int, kanban_id: int):
         self.logger.debug("Creating fake issues!")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     dc = DirectoryCreator()
     dc.run()
