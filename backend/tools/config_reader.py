@@ -1,10 +1,13 @@
-from tools.log import setup_custom_logger
 import os
 import sys
 import xmltodict
 
+from tools.log import setup_custom_logger
+
 
 class ConfigReader:
+    """ Class for reading config file used by all Rabbit infrastructure """
+
     def __init__(self):
         self.logger = setup_custom_logger("config_reader")
 

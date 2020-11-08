@@ -43,7 +43,9 @@ class DirectoryCreator:
         return platform.system()
 
     @staticmethod
-    def set_installation_directory(installation_dir_arg: str, default_attribute: str):
+    def set_installation_directory(
+        installation_dir_arg: str, default_attribute: str
+    ) -> str:
         if installation_dir_arg != default_attribute:
             return installation_dir_arg
         elif installation_dir_arg == default_attribute:
@@ -140,7 +142,6 @@ class DirectoryCreator:
 
         if self.debug:
             self.create_fake_kanbans(num_kanbans=10)
-            self.create_fake_issues(10, 1)
 
     ### DEBUG METHODS ###
     def create_fake_kanbans(self, num_kanbans: int):
@@ -166,9 +167,6 @@ class DirectoryCreator:
                     file.write(tree)
             except Exception as e:
                 self.logger.exception(e)
-
-    def create_fake_issues(self, num_issues: int, kanban_id: int):
-        self.logger.debug("Creating fake issues!")
 
 
 if __name__ == "__main__":

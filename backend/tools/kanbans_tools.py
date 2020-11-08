@@ -1,9 +1,9 @@
 import xml.etree.cElementTree as ET
+import os
+import shutil
 from typing import Tuple
 from glob import glob
-import os
 import xmltodict
-import shutil
 
 from tools.xml_tools import prettify
 
@@ -51,6 +51,8 @@ class KanbanFinder:
 
 
 class KanbanCreator:
+    """ Class consisting of methods for creating kanban boards objects """
+
     @staticmethod
     def create_new_kanban_folder(kanbans_directory: str) -> Tuple[str, int]:
         """ Creates new kanban folder and returns new directory with new kanban id """
@@ -85,7 +87,6 @@ class KanbanCreator:
             tree = prettify(root)
             return tree
         except Exception as e:
-            print(e)
             return None
 
 
