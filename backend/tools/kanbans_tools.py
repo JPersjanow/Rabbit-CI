@@ -1,9 +1,9 @@
 import xml.etree.cElementTree as ET
 import os
-import xmltodict
 import shutil
 from typing import Tuple
 from glob import glob
+import xmltodict
 
 from tools.xml_tools import prettify
 
