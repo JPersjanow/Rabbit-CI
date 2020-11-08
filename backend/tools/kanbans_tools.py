@@ -3,6 +3,7 @@ from typing import Tuple
 from glob import glob
 import os
 import xmltodict
+import shutil
 
 from tools.xml_tools import prettify
 
@@ -86,3 +87,10 @@ class KanbanCreator:
         except Exception as e:
             print(e)
             return None
+
+
+class KanbanDeleter:
+    @staticmethod
+    def delete_kanban(kanbans_directory: str, kanban_id: str):
+        kanban_directory = os.path.join(kanbans_directory, str(kanban_id))
+        shutil.rmtree(kanban_directory)

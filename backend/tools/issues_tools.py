@@ -21,9 +21,7 @@ class IssueFinder:
             for issue in all_issues:
                 with open(issue, "r") as issue_xml:
                     all_issues_info.append(xmltodict.parse(issue_xml.read()))
-            return all_issues_info
-        else:
-            raise FileNotFoundError("No issues exist for this kanban")
+        return all_issues_info
 
     @staticmethod
     def check_if_issues_directory_exists(issues_directory: str) -> bool:
@@ -121,3 +119,16 @@ class IssueCreator:
         except Exception as e:
             print(e)
             return None
+
+
+class IssueDeleter:
+    @staticmethod
+    def delete_issue(kanbans_directory: str, kanban_id: int, issue_name: str):
+        kanban_directory = os.path.join(kanbans_directory, str(kanban_id))
+        issues_directory = os.path.join(kanban_directory, "issues")
+        if IssueFinder.check_if_issue_exists(
+            issues_directory=issues_directory, issue_name=issue_name
+        ):
+            os.remove(os.path.join(issues_directory, f"{issue_name}.xml"))
+        else:
+            raise FileNotFoundError
