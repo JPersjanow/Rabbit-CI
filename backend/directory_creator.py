@@ -1,43 +1,156 @@
-from glob import glob
 import xml.etree.cElementTree as ET
-from xml.dom import minidom
-import xmltodict
+from pathlib import Path
 import os
 import sys
-import log
+import argparse
+import platform
+
+
+from tools.log import setup_custom_logger
+from tools.xml_tools import prettify
+from tools.config_creator import ConfigCreator
+
 
 class DirectoryCreator:
-    def __init__(self):
-        self.current_dir = os.getcwd()
-        self.logger = log.Logger('dir_creator').log
+    """ Main class for creating directory strucute for Rabbit-CI """
 
-        self.kanban_directory = os.path.join(self.current_dir, 'kanbans')
-    
+    description = "directory_creator.py is a automation script for creating Rabbit-CI directory structure"
+
+    def __init__(self):
+        args = self._parse_args(args=sys.argv[1:])
+        self.platform = self.check_platform()
+        self.installation_directory = self.set_installation_directory(
+            args.installation_directory, "default"
+        )
+
+        self.logger = setup_custom_logger("directory_creator")
+
+        self.kanban_directory = os.path.join(self.installation_directory, "kanbans")
+        self.config_directory = os.path.join(self.installation_directory, "config")
+
+        if args.debug == "enable":
+            self.debug = True
+        else:
+            self.debug = False
+
+        if args.validate_directory == "enable":
+            self.validate_directory = True
+        else:
+            self.validate_directory = False
+
+    @staticmethod
+    def check_platform() -> str:
+        return platform.system()
+
+    @staticmethod
+    def set_installation_directory(
+        installation_dir_arg: str, default_attribute: str
+    ) -> str:
+        if installation_dir_arg != default_attribute:
+            return installation_dir_arg
+        elif installation_dir_arg == default_attribute:
+            home = str(Path.home())
+            return os.path.join(home, "rabbit")
+
+    @staticmethod
+    def _parse_args(args: list) -> argparse.Namespace:
+        """
+        Arguments parser
+        :param args: list as taken from sys.argv
+        :return: parsed args
+        """
+        parser = argparse.ArgumentParser(description=DirectoryCreator.description)
+        parser.add_argument(
+            "--installation_directory",
+            help="Directory where folder structure will be created, if default is set Rabbit will be installed to user home directory",
+            default="default",
+        )
+        parser.add_argument(
+            "--debug",
+            help="Trun on debug mode. If this mode is enabled, directories will be populated with mock files",
+            choices=["enable", "disable"],
+            default="disable",
+        )
+        parser.add_argument(
+            "--validate_directory",
+            help="If this option is enabled, directory creator will only validate if folder structure is proper",
+            choices=["enable", "disable"],
+            default="disable",
+        )
+        parser.add_argument(
+            "--exit_on_error",
+            help="If this mode is enabled, directory creator will exit if given directories already exits",
+            choices=["enable", "disable"],
+            default="disable",
+        )
+        return parser.parse_args(args)
 
     def create_directory_tree(self):
-        self.logger.info("Creating directory")
-        self.logger.info("Creating kanban directory")
+        self.logger.info(f"Creating main directory in {self.installation_directory}")
         try:
-            os.mkdir(self.kanban_directory, mode=0o777)
+            os.mkdir(self.installation_directory)
             self.logger.info(f"Kanban directory created in {self.kanban_directory}")
         except FileExistsError:
             self.logger.warning(f"{self.kanban_directory} already exists!")
         except Exception as e:
             self.logger.exception(e)
 
-    def prettify(self, elem):
-        rough_string = ET.tostring(elem, 'utf-8')
-        reparsed = minidom.parseString(rough_string)
-        return reparsed.toprettyxml(indent="  ")
+        self.logger.info(
+            f"Creating directory structure in {self.installation_directory}"
+        )
+        self.logger.info("Creating kanban directory")
+        try:
+            os.mkdir(self.kanban_directory)
+            self.logger.info(f"Kanban directory created in {self.kanban_directory}")
+        except FileExistsError:
+            self.logger.warning(f"{self.kanban_directory} already exists!")
+        except Exception as e:
+            self.logger.exception(e)
 
-    ### TESTING PURPOSES ###
+        self.logger.info("Creating config directory")
+        try:
+            os.mkdir(self.config_directory)
+            self.logger.info(f"Config directory created in {self.config_directory}")
+            self.logger.info("Setting config directory as environment variable")
+            self.set_config_env_variable()
+        except FileExistsError:
+            self.logger.warning(f"{self.config_directory} already exists!")
+        except Exception as e:
+            self.logger.exception(e)
+
+    def set_config_env_variable(self):
+        if self.platform == "Linux":
+            self.logger.info("Linux platform detected")
+            with open(os.path.expanduser("~/.bashrc"), "a") as outfile:
+                outfile.write(f"export RABBITCONFIG={self.config_directory}")
+        elif self.platform == "Windows":
+            self.logger.info("Windows platform detected")
+            os.environ["RABBITCONFIG"] = self.installation_directory
+
+    def create_config_file(self):
+        cfg_creator = ConfigCreator(
+            installation_directory=self.installation_directory,
+            config_directory=self.config_directory,
+            kanbans_directory=self.kanban_directory,
+        )
+        cfg_creator.create_config_file()
+
+    def run(self):
+        if not self.validate_directory:
+            self.create_directory_tree()
+            self.create_config_file()
+
+        if self.debug:
+            self.create_fake_kanbans(num_kanbans=10)
+
+    ### DEBUG METHODS ###
     def create_fake_kanbans(self, num_kanbans: int):
         self.logger.debug("Creating fake kanban directories!")
         for i in range(1, num_kanbans, 1):
             self.logger.debug(f"Creating kanban num {i}")
             single_kanban = os.path.join(self.kanban_directory, str(i))
             try:
-                os.mkdir(single_kanban, mode=0o777)
+                os.mkdir(single_kanban)
             except FileExistsError:
                 self.logger.warning(f"{single_kanban} already exists!")
             except Exception as e:
@@ -49,13 +162,13 @@ class DirectoryCreator:
                 info = ET.SubElement(root, "info")
                 ET.SubElement(info, "name").text = f"kanban_{str(i)}"
                 ET.SubElement(info, "id").text = f"{str(i)}"
-                for j in range(10):
-                    issues = ET.SubElement(info, "issues")
-                    ET.SubElement(issues, "name").text = f"ISS-{j}"
-                    ET.SubElement(issues, "creation_date").text = f"03/11/2020"
-                    ET.SubElement(issues, "id").text = str(j)
-                tree = self.prettify(root)
-                with open(os.path.join(single_kanban,"config.xml",), "w+") as file:
+                tree = prettify(root)
+                with open(os.path.join(single_kanban, "config.xml"), "w+") as file:
                     file.write(tree)
             except Exception as e:
                 self.logger.exception(e)
+
+
+if __name__ == "__main__":
+    dc = DirectoryCreator()
+    dc.run()
