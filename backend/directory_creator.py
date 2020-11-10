@@ -125,7 +125,7 @@ class DirectoryCreator:
                 outfile.write(f"export RABBITCONFIG={self.config_directory}")
         elif self.platform == "Windows":
             self.logger.info("Windows platform detected")
-            os.system(f"setx RABBITCONFIG {self.config_directory}") 
+            os.system(f"setx RABBITCONFIG {self.config_directory}")
 
     def create_config_file(self):
         cfg_creator = ConfigCreator(

@@ -2,7 +2,12 @@ from flask_restplus import Resource, fields
 from flask import jsonify
 from api import api
 
-from tools.issues_tools import IssueCreator, IssueFinder, IssueDeleter
+from tools.issues_tools import (
+    IssueCreator,
+    IssueFinder,
+    IssueDeleter,
+    IssueStageHandler,
+)
 from tools.kanbans_tools import KanbanFinder
 from tools.config_reader import ConfigReader
 from tools.xml_tools import update_xml_attribute
@@ -169,6 +174,7 @@ class IssueSingle(Resource):
     @api.response(404, "Issue not found")
     @api.response(500, "Unable to delete issue")
     def delete(self, kanban_id, issue_name):
+        """ Deletes given issue from given kanban """
         try:
             issue_deleter = IssueDeleter()
             issue_deleter.delete_issue(
@@ -181,3 +187,51 @@ class IssueSingle(Resource):
             return {"response": "Issue coulnd't be found"}, 404
         except Exception as e:
             return {"response": "Couldn't delete issue", "exception": str(e)}, 500
+
+
+@ns.route("//<int:kanban_id>/issues/<string:issue_name>/stage")
+class IssueSingleStage(Resource):
+    def get(self, kanban_id, issue_name):
+        """ Check on which stage issue is """
+        issue_stage_hand = IssueStageHandler()
+        try:
+            stage = issue_stage_hand.check_stage(
+                kanbans_directory=config.kanbans_directory,
+                kanban_id=kanban_id,
+                issue_name=issue_name,
+            )
+            return {"response": "Stage for issue fetched", "stage": stage}, 200
+        except AttributeError:
+            return {"response": "Issue is not set to any stage"}, 500
+        except FileNotFoundError:
+            return {"response": "Issue coulnd't be found"}, 404
+        except Exception as e:
+            return {"response": "Couldn't delete issue", "exception": str(e)}, 500
+
+
+@ns.route("/<int:kanban_id>/issues/<string:issue_name>/<string:stage>")
+class IssueSingleStageChange(Resource):
+    def put(self, kanban_id, issue_name, stage):
+        """ Assings chosen issue to given stage """
+        issue_stage_hand = IssueStageHandler()
+        if (
+            issue_stage_hand.check_stage(
+                kanbans_directory=config.kanbans_directory,
+                kanban_id=kanban_id,
+                issue_name=issue_name,
+            )
+            == stage
+        ):
+            return {"response": f"Issue {issue_name} already assign to {stage}"}
+        try:
+            issue_stage_hand.change_stage(
+                kanbans_directory=config.kanbans_directory,
+                kanban_id=kanban_id,
+                issue_name=issue_name,
+                stage_to_assign=stage,
+            )
+        except FileNotFoundError:
+            return {"response": f"Kanban with id {kanban_id} doesn't exits"}, 404
+        except Exception as e:
+            return {"response": "Couldn't assing to stage", "exception": str(e)}, 500
+        return 200
