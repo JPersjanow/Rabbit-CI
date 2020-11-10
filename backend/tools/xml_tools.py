@@ -2,7 +2,7 @@ import xml.etree.cElementTree as ET
 from xml.dom import minidom
 
 
-def prettify(elem):
+def prettify(elem) -> str:
     """Method for prettyfying xml files"""
     rough_string = ET.tostring(elem, "utf-8")
     reparsed = minidom.parseString(rough_string)
@@ -34,7 +34,7 @@ def add_xml_attribute_to_child(
     attribute_name: str,
     new_attribute_name: str,
     new_attribute_value: str,
-):
+) -> None:
     tree = ET.parse(xml_file)
     root = tree.getroot()
     for child in root.iter(attribute_name):
@@ -48,7 +48,7 @@ def remove_xml_attribute_with_value(
     attribute_name: str,
     attribute_name_delete: str,
     attribute_value_delete: str,
-):
+) -> None:
     tree = ET.parse(xml_file)
     root = tree.getroot()
     for child in root.iter(attribute_name):

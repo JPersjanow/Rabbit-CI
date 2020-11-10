@@ -16,6 +16,7 @@ from tools.xml_tools import (
 
 
 class Stages(Enum):
+    """ Stages enum class for keeping them in a proper structure rather than string """
     ToDo = "todo"
     Doing = "doing"
     Done = "done"
@@ -142,6 +143,7 @@ class IssueCreator:
 
 
 class IssueDeleter:
+    """ Class consisting of methods for deleting given issue """
     @staticmethod
     def delete_issue(kanbans_directory: str, kanban_id: int, issue_name: str):
         kanban_directory = os.path.join(kanbans_directory, str(kanban_id))
@@ -155,6 +157,7 @@ class IssueDeleter:
 
 
 class IssueStageHandler:
+    """ Class consisting of methods for handling issues within stages """
     @staticmethod
     def check_stage(kanbans_directory: str, kanban_id: int, issue_name: str) -> str:
         kanban_directory = os.path.join(kanbans_directory, str(kanban_id))

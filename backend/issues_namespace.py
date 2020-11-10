@@ -191,6 +191,7 @@ class IssueSingle(Resource):
 
 @ns.route("//<int:kanban_id>/issues/<string:issue_name>/stage")
 class IssueSingleStage(Resource):
+    """ Endpoint for getting stage of certain issue"""
     def get(self, kanban_id, issue_name):
         """ Check on which stage issue is """
         issue_stage_hand = IssueStageHandler()
@@ -211,6 +212,7 @@ class IssueSingleStage(Resource):
 
 @ns.route("/<int:kanban_id>/issues/<string:issue_name>/<string:stage>")
 class IssueSingleStageChange(Resource):
+    """ Endpoints for changing issue-stage relation """
     def put(self, kanban_id, issue_name, stage):
         """ Assings chosen issue to given stage """
         issue_stage_hand = IssueStageHandler()
