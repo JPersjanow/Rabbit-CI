@@ -161,7 +161,6 @@ class IssueStageHandler:
     @staticmethod
     def check_stage(kanbans_directory: str, kanban_id: int, issue_name: str) -> str:
         kanban_directory = os.path.join(kanbans_directory, str(kanban_id))
-        kanban_config = os.path.join(kanban_directory, "config.xml")
         issues_directory = os.path.join(kanban_directory, "issues")
         issue_xml = os.path.join(issues_directory, f"{issue_name}.xml")
 
