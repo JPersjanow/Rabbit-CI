@@ -7,7 +7,7 @@ const ListElement = (props) => {
         <div key={item.kanban.info.id} className="kanbansRow">
             <span>{item.kanban.info.name}</span>
             <button onClick={() => props.userKanbanListButton(item.kanban.info.id)}
-                style={{ float: 'right' }}>
+                style={{ float: 'right', fontSize: '16px', fontFamily: 'fontawesome !important' }}>
                 <i className="fa fa-arrow-right"></i>
             </button>
         </div>
@@ -20,6 +20,7 @@ const NewListElement = (props) => {
     //const handleSubmit = props.handleSubmit;
     const handleValueChange = props.handleValueChange;
     const submitNewKanbanHandler = props.submitNewKanbanHandler;
+    const cancelButtonHandler = props.cancelButtonHandler;
     let nameValue;
     return (
         <div className="kanbansRow">
@@ -31,8 +32,12 @@ const NewListElement = (props) => {
                 placeholder="Write new kanban name..."
                 name="newKanbanName"
             />
+            <button onClick={() => cancelButtonHandler()}
+                style={{ fontSize: '16px', fontFamily: 'fontawesome' }}>
+                <i class="fas fa-times"></i>
+            </button>
             <button onClick={() => submitNewKanbanHandler()}
-                style={{ float: 'right' }}>
+                style={{ float: 'right', fontSize: '16px', fontFamily: 'fontawesome' }}>
                 <i className="fas fa-check"></i>
             </button>
 
@@ -51,6 +56,7 @@ const KanbanList = (props) => {
     const sumbmitState = props.sumbmitState;
     const inputChangeHandler = props.inputChangeHandler;
     const submitNewKanbanHandler = props.submitNewKanbanHandler;
+    const cancelButtonHandler = props.cancelButtonHandler;
     console.log(addNewKanbanVariable);
     return (
         <div>
@@ -61,7 +67,8 @@ const KanbanList = (props) => {
                 <NewListElement
                     submitNewKanbanHandler={submitNewKanbanHandler}
                     handleSubmit={handleSubmit}
-                    handleValueChange={inputChangeHandler} /> : null}
+                    handleValueChange={inputChangeHandler}
+                    cancelButtonHandler={cancelButtonHandler} /> : null}
             <button onClick={() => addNewKanbanButtonHandler()}>Add new kanban</button>
         </div>
     )
