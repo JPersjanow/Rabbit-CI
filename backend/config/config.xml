@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<rabbit_config>
+  <installation_directory>C:\Users\Alice\rabbit</installation_directory>
+  <kanbans_directory>C:\Users\Alice\rabbit\kanbans</kanbans_directory>
+</rabbit_config>

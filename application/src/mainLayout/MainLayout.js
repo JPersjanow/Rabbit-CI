@@ -21,9 +21,10 @@ class MainLayout extends React.Component {
     }
 
     componentDidMount() {
-        const query = "http://localhost:5000/api/v1/resources/kanbans/all"; // http instead of https
+        const query = "http://localhost:5000/api/v1/resources/kanbans/"; // http instead of https
         fetch(query).then(response => {
             if (response.ok) {
+                console.log(response);
                 return response // need this to clear data and take array
             }
             throw Error(response.status)
@@ -43,13 +44,19 @@ class MainLayout extends React.Component {
         const userTables = this.state.userKanbans;
         const chooseKanban = userTables.filter(item => item.kanban.info.id === kanbanId); //
         console.log(chooseKanban);
-        const chooseKanbanIssue = chooseKanban[0].kanban.info.issues;
+        const thiskanbanName = chooseKanban[0].kanban.info.name;
+        const todOTable = chooseKanban[0].kanban.todo;
+        const doingTable = chooseKanban[0].kanban.doing;
+        const doneTable = chooseKanban[0].kanban.done;
+        const chooseKanbanIssue = { toDo: todOTable, doing: doingTable, done: doneTable };
         console.log(chooseKanbanIssue);
         this.setState({
             kanbanTablesContent: chooseKanbanIssue,
             userKanbansPage: false,
             userKanbansTablePage: true,
+            singleKanbanName: thiskanbanName,
         })
+
     }
 
     handleKanbanListButtonBack = () => {

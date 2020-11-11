@@ -39,7 +39,7 @@ class KanbansAll(Resource):
             print(all_kanbans_info_list)
             response = jsonify(all_kanbans_info_list)
             print(response)
-            # response.headers.add("Access-Control-Allow-Origin", "*")
+            response.headers.add("Access-Control-Allow-Origin", "*")
         except Exception as e:
             return {"response": f"Kanbans couldn't be fetched! {e}"}, 500
 
@@ -121,7 +121,8 @@ class KanbanSingle(Resource):
             config_file_dir = os.path.join(kanban_directory, "config.xml")
             try:
                 if api.payload["name"] != "string":
-                    update_xml_attribute(config_file_dir, "name", api.payload["name"])
+                    update_xml_attribute(
+                        config_file_dir, "name", api.payload["name"])
                     response["response_name"] = f"Updated with {api.payload['name']}"
                 if api.payload["description"] != "string":
                     update_xml_attribute(

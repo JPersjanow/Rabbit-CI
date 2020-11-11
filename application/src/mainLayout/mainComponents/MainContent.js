@@ -37,69 +37,38 @@ const AssignedKanbanTable = (props) => {
 }
 
 
-class MainContent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            submit: props.submit,
-            addNewKanbanVariable: props.addNewKanbanVariable,
-            inputValue: "",
-        }
-    }
+const MainContent = (props) => {
+    const addNewKanbanVariable = props.addNewKanbanVariable;
+    const addNewKanbanButtonHandler = props.addNewKanbanButtonHandler;
+    const userKanbans = props.userKanbans;
+    const singleKanbanName = props.singleKanbanName;
+    const userKanbanListButton = props.userKanbanListButton;
+    const kanbanTablesContent = props.kanbanTablesContent;
+    // const userKanbansTablePage = props.userKanbansTablePage;
+    const userKanbanListButtonBackHandler = props.userKanbanListButtonBackHandler;
+    const submit = props.submit;
+    const isUserKanbansPage = props.isUserKanbansPage;
+    const isuserKanbansTablePage = props.isuserKanbansTablePage;
 
-    handleChangeInputValue = (e) => {
-        console.log(e.target.value);
-        this.setState({
-            inputValue: e.target.value,
-        })
-    }
-
-    handleSubmit = () => {
-        console.log("handle submit");
-        if (this.state.inputValue === "") {
-            return alert("need to write something")
-        } else (
-            this.setState({
-                submit: true,
-                addNewKanbanVariable: false,
-            })
-        )
-
-    }
-
-
-    render() {
-        const {
-            addNewKanbanVariable,
-            addNewKanbanButtonHandler,
-            userKanbans,
-            singleKanbanName,
-            userKanbanListButton,
-            kanbanTablesContent,
-            userKanbansTablePage,
-            userKanbanListButtonBackHandler,
-            submit } = this.props;
-        const handleSubmit = this.handleSubmit;
-        const handleInputValueChange = this.handleChangeInputValue;
-        return (
-            <div className="mainContentStyle">
-                { kanbanTablesContent !== [] && userKanbansTablePage ?
-                    <KanbanTables
-                        singleKanbanName={singleKanbanName}
-                        userKanbanListButtonBackHandler={userKanbanListButtonBackHandler}
-                        kanbanTablesContent={kanbanTablesContent} />
-                    : <AssignedKanbanTable
-                        userKanbans={userKanbans}
-                        userKanbanListButton={userKanbanListButton}
-                        addNewKanbanButtonHandler={addNewKanbanButtonHandler}
-                        addNewKanbanVariable={addNewKanbanVariable}
-                        submit={submit}
-                        handleSubmit={handleSubmit}
-                        handleChange={handleInputValueChange} />
-                }
-            </div>
-        )
-    }
+    console.log(isUserKanbansPage);
+    console.log(isuserKanbansTablePage);
+    return (
+        <div className="mainContentStyle">
+            { isuserKanbansTablePage && !isUserKanbansPage ?
+                <KanbanTables
+                    singleKanbanName={singleKanbanName}
+                    userKanbanListButtonBackHandler={userKanbanListButtonBackHandler}
+                    kanbanTablesContent={kanbanTablesContent} />
+                : <AssignedKanbanTable
+                    userKanbans={userKanbans}
+                    userKanbanListButton={userKanbanListButton}
+                    addNewKanbanButtonHandler={addNewKanbanButtonHandler}
+                    addNewKanbanVariable={addNewKanbanVariable}
+                    submit={submit}
+                />
+            }
+        </div>
+    )
 
 }
 

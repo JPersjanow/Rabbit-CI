@@ -7,6 +7,12 @@ const KanbanTables = (props) => {
     const userKanbanListButtonBackHandler = props.userKanbanListButtonBackHandler;
     const kanbanTablesContent = props.kanbanTablesContent;
     console.log(kanbanTablesContent);
+    const toDoTable = kanbanTablesContent.toDo;
+    const doing = kanbanTablesContent.doing;
+    const done = kanbanTablesContent.done
+    const doToTitle = "ToDO";
+    const doingTitle = "Doing";
+    const doneTitle = "Done";
     return (
         <div className="kanbanTablesStyle">
             <div className="backButtonContainer">
@@ -19,7 +25,9 @@ const KanbanTables = (props) => {
                 <span>{singleKanbanName}</span>
             </div>
             <div className="kanbanTablesContainer">
-                <SingleTables kanbanTablesContent={kanbanTablesContent} />
+                <SingleTables kanbanTablesContent={toDoTable} title={doToTitle} />
+                <SingleTables kanbanTablesContent={doing} title={doingTitle} />
+                <SingleTables kanbanTablesContent={done} title={doneTitle} />
             </div>
         </div>
     )

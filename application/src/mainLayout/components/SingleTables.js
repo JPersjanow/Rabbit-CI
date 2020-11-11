@@ -2,20 +2,31 @@ import React from 'react';
 import '../componentsStyle/SingleTables.css'
 
 
+const Tasks = (props) => {
+
+    const task = <div>task</div>
+    return task;
+}
+
+
 const SingleTables = (props) => {
     const kanbanTablesContent = props.kanbanTablesContent
-
-    const tables = kanbanTablesContent.map((item, index) => (
-        <div key={index} className="singleTableStyle">
+    const title = props.title
+    console.log(kanbanTablesContent);
+    const tables = (
+        <div className="singleTableStyle">
             <div className="tableTitle">
-                <span>{item.toDo}</span>
+                <span>{title}</span>
             </div>
             <div className="tableContent">
-                <span>{item.toDo}</span>
+                {kanbanTablesContent === null || kanbanTablesContent === [] || kanbanTablesContent === undefined ?
+                    <span>nothing to show...</span>
+                    : <Tasks kanbanTablesContent={kanbanTablesContent} />
+                }
             </div>
 
         </div>
-    ))
+    )
 
 
     return tables;
