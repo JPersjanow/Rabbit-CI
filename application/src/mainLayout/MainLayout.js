@@ -118,7 +118,6 @@ class MainLayout extends React.Component {
     }
 
     handleCancelButton = () => {
-        console.log("cancel");
         this.setState({
             sumbmitState: 1,
             addNewKanban: false,
@@ -133,7 +132,9 @@ class MainLayout extends React.Component {
         const automationPage = this.state.automationPage;
         const singleJobPage = this.state.singleJobPage;
         const userKanbanListButtonHandler = this.handleKanbanListButton;
+
         const userKanbanListButtonBackHandler = this.handleKanbanListButtonBack;
+
         const kanbanTablesContent = this.state.kanbanTablesContent;
         const singleKanbanName = this.state.singleKanbanName;
         const addNewKanbanButtonHandler = this.hanldeAddNewKanban;
@@ -150,7 +151,8 @@ class MainLayout extends React.Component {
                 <div className="contentLayout">
                     <LeftMenu
                         userKanbansTablePage={userKanbansTablePage}
-                        addNewKanbanButtonHandler={addNewKanbanButtonHandler} />
+                        addNewKanbanButtonHandler={addNewKanbanButtonHandler}
+                        userKanbanListButtonBackHandler={userKanbanListButtonBackHandler} />
                     <MainContent
                         userKanbans={userKanbans}
                         isUserKanbansPage={userKanbansPage}

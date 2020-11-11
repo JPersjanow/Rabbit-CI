@@ -5,11 +5,14 @@ import '../mainComponentsStyle/LeftMenu.css'
 const LeftMenu = (props) => {
     const userKanbansTablePage = props.userKanbansTablePage;
     const addNewKanbanButtonHandler = props.addNewKanbanButtonHandler;
+    const userKanbanListButtonBackHandler = props.userKanbanListButtonBackHandler;
     return (
         <div className="leftMenuStyle">
             {userKanbansTablePage ?
                 <div className="kanbanButtonsContianer">
-                    <button className="btnColor">Kanban list</button>
+                    <button
+                        onClick={() => userKanbanListButtonBackHandler()}
+                        className="btnColor">Kanban list</button>
                     <button className="btnColor">Add issue</button>
                 </div>
                 : <div className="kanbanButtonsContianer">

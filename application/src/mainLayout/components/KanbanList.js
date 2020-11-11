@@ -2,7 +2,6 @@ import React from 'react';
 import '../componentsStyle/KanbanList.css'
 
 const ListElement = (props) => {
-    //console.log(props.userKanbans[0].kanban.info);
     const elements = props.userKanbans.map((item) => (
         <div key={item.kanban.info.id} className="kanbansRow">
             <span>{item.kanban.info.name}</span>
@@ -16,8 +15,6 @@ const ListElement = (props) => {
 }
 
 const NewListElement = (props) => {
-    //const submit = props.submit;
-    //const handleSubmit = props.handleSubmit;
     const handleValueChange = props.handleValueChange;
     const submitNewKanbanHandler = props.submitNewKanbanHandler;
     const cancelButtonHandler = props.cancelButtonHandler;
