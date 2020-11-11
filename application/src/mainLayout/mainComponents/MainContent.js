@@ -9,9 +9,10 @@ const AssignedKanbanTable = (props) => {
     const userKanbanListButton = props.userKanbanListButton
     const addNewKanbanButtonHandler = props.addNewKanbanButtonHandler
     const addNewKanbanVariable = props.addNewKanbanVariable;
-    const handleSubmit = props.handleSubmit;
-    const submit = props.submit;
-    const handleChange = props.handleChange;
+    //const handleSubmit = props.handleSubmit;
+    const sumbmitState = props.sumbmitState;
+    const inputChangeHandler = props.inputChangeHandler;
+    const submitNewKanbanHandler = props.submitNewKanbanHandler;
     return (
         <div>
             <div className="contentTitle">
@@ -27,9 +28,9 @@ const AssignedKanbanTable = (props) => {
                         userKanbanListButton={userKanbanListButton}
                         addNewKanbanButtonHandler={addNewKanbanButtonHandler}
                         addNewKanbanVariable={addNewKanbanVariable}
-                        handleSubmit={handleSubmit}
-                        handleChange={handleChange}
-                        submit={submit} />
+                        inputChangeHandler={inputChangeHandler}
+                        sumbmitState={sumbmitState}
+                        submitNewKanbanHandler={submitNewKanbanHandler} />
                 </div>
             </div>
         </div>
@@ -44,14 +45,14 @@ const MainContent = (props) => {
     const singleKanbanName = props.singleKanbanName;
     const userKanbanListButton = props.userKanbanListButton;
     const kanbanTablesContent = props.kanbanTablesContent;
-    // const userKanbansTablePage = props.userKanbansTablePage;
     const userKanbanListButtonBackHandler = props.userKanbanListButtonBackHandler;
-    const submit = props.submit;
+    const sumbmitState = props.sumbmitState;
     const isUserKanbansPage = props.isUserKanbansPage;
     const isuserKanbansTablePage = props.isuserKanbansTablePage;
-
-    console.log(isUserKanbansPage);
-    console.log(isuserKanbansTablePage);
+    const inputChangeHandler = props.inputChangeHandler;
+    const submitNewKanbanHandler = props.submitNewKanbanHandler;
+    // console.log(isUserKanbansPage);
+    //  console.log(isuserKanbansTablePage);
     return (
         <div className="mainContentStyle">
             { isuserKanbansTablePage && !isUserKanbansPage ?
@@ -64,7 +65,9 @@ const MainContent = (props) => {
                     userKanbanListButton={userKanbanListButton}
                     addNewKanbanButtonHandler={addNewKanbanButtonHandler}
                     addNewKanbanVariable={addNewKanbanVariable}
-                    submit={submit}
+                    sumbmitState={sumbmitState}
+                    inputChangeHandler={inputChangeHandler}
+                    submitNewKanbanHandler={submitNewKanbanHandler}
                 />
             }
         </div>

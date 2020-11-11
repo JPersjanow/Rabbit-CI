@@ -16,8 +16,8 @@ class MainLayout extends React.Component {
         kanbanTablesContent: [],
         singleKanbanName: "",
         addNewKanban: false,
-        addedKanbanName: " ",
-        sumbmit: "",
+        addedKanbanName: "",
+        sumbmitState: 1,
     }
 
     componentDidMount() {
@@ -39,17 +39,16 @@ class MainLayout extends React.Component {
     }
 
     handleKanbanListButton = (kanbanId) => {
-        console.log(kanbanId);
-
+        // console.log(kanbanId);
         const userTables = this.state.userKanbans;
         const chooseKanban = userTables.filter(item => item.kanban.info.id === kanbanId); //
-        console.log(chooseKanban);
+        // console.log(chooseKanban);
         const thiskanbanName = chooseKanban[0].kanban.info.name;
         const todOTable = chooseKanban[0].kanban.todo;
         const doingTable = chooseKanban[0].kanban.doing;
         const doneTable = chooseKanban[0].kanban.done;
         const chooseKanbanIssue = { toDo: todOTable, doing: doingTable, done: doneTable };
-        console.log(chooseKanbanIssue);
+        // console.log(chooseKanbanIssue);
         this.setState({
             kanbanTablesContent: chooseKanbanIssue,
             userKanbansPage: false,
@@ -71,9 +70,45 @@ class MainLayout extends React.Component {
         console.log("add new kanban");
         this.setState({
             addNewKanban: true,
-            submit: false,
+            sumbmitState: 2,
         })
+    }
 
+    handleChange = (e) => {
+        let inputValue = e.target.value;
+        console.log(inputValue);
+        this.setState({
+            addedKanbanName: inputValue,
+        });
+    }
+
+    handleSubmitNewKanban = () => {
+        console.log("handleSubmitNewKanban");
+        const addedKanbanName = this.state.addedKanbanName
+        const actualKanbansList = this.state.userKanbans;
+        const actualKanbansListLength = actualKanbansList.length;
+        let addedKanbanId = actualKanbansListLength + 1;
+        let addedKanban = {
+            kanban:
+            {
+                doing: null,
+                done: null, todo: null, info: {
+                    description: "",
+                    id: addedKanbanId,
+                    name: addedKanbanName,
+                }
+            }
+        };
+        console.log(addedKanban);
+        const userKanbansActual = this.state.userKanbans;
+        console.log(userKanbansActual)
+        const userKanbansupdate = this.state.userKanbans.concat(addedKanban);
+        console.log(userKanbansupdate);
+        this.setState({
+            userKanbans: userKanbansupdate,
+            sumbmitState: 1,
+            addNewKanban: false,
+        });
     }
 
     render() {
@@ -88,7 +123,9 @@ class MainLayout extends React.Component {
         const singleKanbanName = this.state.singleKanbanName;
         const addNewKanbanButtonHandler = this.hanldeAddNewKanban;
         const addNewKanbanVariable = this.state.addNewKanban;
-        const submit = this.state.sumbmit;
+        const sumbmitState = this.state.sumbmitState;
+        const inputChangeHandler = this.handleChange;
+        const submitNewKanbanHandler = this.handleSubmitNewKanban;
         return (
             <div className="mainLayout">
                 <TopNav
@@ -109,7 +146,9 @@ class MainLayout extends React.Component {
                         kanbanTablesContent={kanbanTablesContent}
                         singleKanbanName={singleKanbanName}
                         addNewKanbanVariable={addNewKanbanVariable}
-                        submit={submit}
+                        sumbmitState={sumbmitState}
+                        inputChangeHandler={inputChangeHandler}
+                        submitNewKanbanHandler={submitNewKanbanHandler}
                     />
                 </div>
             </div>

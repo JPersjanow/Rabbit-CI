@@ -17,8 +17,9 @@ const ListElement = (props) => {
 
 const NewListElement = (props) => {
     //const submit = props.submit;
-    const handleSubmit = props.handleSubmit;
+    //const handleSubmit = props.handleSubmit;
     const handleValueChange = props.handleValueChange;
+    const submitNewKanbanHandler = props.submitNewKanbanHandler;
     let nameValue;
     return (
         <div className="kanbansRow">
@@ -30,7 +31,7 @@ const NewListElement = (props) => {
                 placeholder="Write new kanban name..."
                 name="newKanbanName"
             />
-            <button onClick={() => handleSubmit()}
+            <button onClick={() => submitNewKanbanHandler()}
                 style={{ float: 'right' }}>
                 <i className="fas fa-check"></i>
             </button>
@@ -47,18 +48,20 @@ const KanbanList = (props) => {
     const addNewKanbanButtonHandler = props.addNewKanbanButtonHandler
     const addNewKanbanVariable = props.addNewKanbanVariable;
     const handleSubmit = props.handleSubmit;
-    const submit = props.submit;
-    const handleChange = props.handleChange;
+    const sumbmitState = props.sumbmitState;
+    const inputChangeHandler = props.inputChangeHandler;
+    const submitNewKanbanHandler = props.submitNewKanbanHandler;
     console.log(addNewKanbanVariable);
     return (
         <div>
             <ListElement
                 userKanbans={userKanbans}
                 userKanbanListButton={userKanbanListButton} />
-            {addNewKanbanVariable === true && !submit ?
+            {addNewKanbanVariable === true && sumbmitState === 2 ?
                 <NewListElement
+                    submitNewKanbanHandler={submitNewKanbanHandler}
                     handleSubmit={handleSubmit}
-                    handleValueChange={handleChange} /> : null}
+                    handleValueChange={inputChangeHandler} /> : null}
             <button onClick={() => addNewKanbanButtonHandler()}>Add new kanban</button>
         </div>
     )
