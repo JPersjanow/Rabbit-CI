@@ -15,6 +15,9 @@ class MainLayout extends React.Component {
         singleJobPage: false,        // page 5
         kanbanTablesContent: [],
         singleKanbanName: "",
+        addNewKanban: false,
+        addedKanbanName: " ",
+        sumbmit: "",
     }
 
     componentDidMount() {
@@ -57,6 +60,15 @@ class MainLayout extends React.Component {
         })
     }
 
+    hanldeAddNewKanban = () => {
+        console.log("add new kanban");
+        this.setState({
+            addNewKanban: true,
+            submit: false,
+        })
+
+    }
+
     render() {
         const userKanbans = this.state.userKanbans;
         const userKanbansPage = this.state.userKanbansPage;
@@ -67,6 +79,9 @@ class MainLayout extends React.Component {
         const userKanbanListButtonBackHandler = this.handleKanbanListButtonBack;
         const kanbanTablesContent = this.state.kanbanTablesContent;
         const singleKanbanName = this.state.singleKanbanName;
+        const addNewKanbanButtonHandler = this.hanldeAddNewKanban;
+        const addNewKanbanVariable = this.state.addNewKanban;
+        const submit = this.state.sumbmit;
         return (
             <div className="mainLayout">
                 <TopNav
@@ -83,8 +98,11 @@ class MainLayout extends React.Component {
                         isSingleJobPage={singleJobPage}
                         userKanbanListButton={userKanbanListButtonHandler}
                         userKanbanListButtonBackHandler={userKanbanListButtonBackHandler}
+                        addNewKanbanButtonHandler={addNewKanbanButtonHandler}
                         kanbanTablesContent={kanbanTablesContent}
                         singleKanbanName={singleKanbanName}
+                        addNewKanbanVariable={addNewKanbanVariable}
+                        submit={submit}
                     />
                 </div>
             </div>

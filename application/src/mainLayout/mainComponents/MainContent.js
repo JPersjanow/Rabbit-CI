@@ -7,6 +7,11 @@ import KanbanTables from '../components/KanbanTables'
 const AssignedKanbanTable = (props) => {
     const userKanbans = props.userKanbans;
     const userKanbanListButton = props.userKanbanListButton
+    const addNewKanbanButtonHandler = props.addNewKanbanButtonHandler
+    const addNewKanbanVariable = props.addNewKanbanVariable;
+    const handleSubmit = props.handleSubmit;
+    const submit = props.submit;
+    const handleChange = props.handleChange;
     return (
         <div>
             <div className="contentTitle">
@@ -19,7 +24,12 @@ const AssignedKanbanTable = (props) => {
                 <div>
                     <KanbanList
                         userKanbans={userKanbans}
-                        userKanbanListButton={userKanbanListButton} />
+                        userKanbanListButton={userKanbanListButton}
+                        addNewKanbanButtonHandler={addNewKanbanButtonHandler}
+                        addNewKanbanVariable={addNewKanbanVariable}
+                        handleSubmit={handleSubmit}
+                        handleChange={handleChange}
+                        submit={submit} />
                 </div>
             </div>
         </div>
@@ -27,31 +37,70 @@ const AssignedKanbanTable = (props) => {
 }
 
 
-const MainContent = (props) => {
+class MainContent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            submit: props.submit,
+            addNewKanbanVariable: props.addNewKanbanVariable,
+            inputValue: "",
+        }
+    }
 
-    const userKanbans = props.userKanbans;
-    const singleKanbanName = props.singleKanbanName;
-    const userKanbanListButton = props.userKanbanListButton
-    const kanbanTablesContent = props.kanbanTablesContent;
-    //const userKanbansPage = props.isUserKanbansPage;
-    const userKanbansTablePage = props.isuserKanbansTablePage;
-    const userKanbanListButtonBackHandler = props.userKanbanListButtonBackHandler;
-    return (
-        <div className="mainContentStyle">
-            { kanbanTablesContent !== [] && userKanbansTablePage ?
-                <KanbanTables
-                    singleKanbanName={singleKanbanName}
-                    userKanbanListButtonBackHandler={userKanbanListButtonBackHandler}
-                    kanbanTablesContent={kanbanTablesContent} />
-                : <AssignedKanbanTable
-                    userKanbans={userKanbans}
-                    userKanbanListButton={userKanbanListButton} />
+    handleChangeInputValue = (e) => {
+        console.log(e.target.value);
+        this.setState({
+            inputValue: e.target.value,
+        })
+    }
 
-            }
+    handleSubmit = () => {
+        console.log("handle submit");
+        if (this.state.inputValue === "") {
+            return alert("need to write something")
+        } else (
+            this.setState({
+                submit: true,
+                addNewKanbanVariable: false,
+            })
+        )
+
+    }
 
 
-        </div>
-    )
+    render() {
+        const {
+            addNewKanbanVariable,
+            addNewKanbanButtonHandler,
+            userKanbans,
+            singleKanbanName,
+            userKanbanListButton,
+            kanbanTablesContent,
+            userKanbansTablePage,
+            userKanbanListButtonBackHandler,
+            submit } = this.props;
+        const handleSubmit = this.handleSubmit;
+        const handleInputValueChange = this.handleChangeInputValue;
+        return (
+            <div className="mainContentStyle">
+                { kanbanTablesContent !== [] && userKanbansTablePage ?
+                    <KanbanTables
+                        singleKanbanName={singleKanbanName}
+                        userKanbanListButtonBackHandler={userKanbanListButtonBackHandler}
+                        kanbanTablesContent={kanbanTablesContent} />
+                    : <AssignedKanbanTable
+                        userKanbans={userKanbans}
+                        userKanbanListButton={userKanbanListButton}
+                        addNewKanbanButtonHandler={addNewKanbanButtonHandler}
+                        addNewKanbanVariable={addNewKanbanVariable}
+                        submit={submit}
+                        handleSubmit={handleSubmit}
+                        handleChange={handleInputValueChange} />
+                }
+            </div>
+        )
+    }
+
 }
 
 

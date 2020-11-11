@@ -15,16 +15,51 @@ const ListElement = (props) => {
     return elements;
 }
 
+const NewListElement = (props) => {
+    //const submit = props.submit;
+    const handleSubmit = props.handleSubmit;
+    const handleValueChange = props.handleValueChange;
+    let nameValue;
+    return (
+        <div className="kanbansRow">
+            <input
+                type="text"
+                id="kanbanNameId"
+                value={nameValue}
+                onChange={handleValueChange}
+                placeholder="Write new kanban name..."
+                name="newKanbanName"
+            />
+            <button onClick={() => handleSubmit()}
+                style={{ float: 'right' }}>
+                <i className="fas fa-check"></i>
+            </button>
+
+        </div>
+
+    )
+}
+
 
 const KanbanList = (props) => {
     const userKanbans = props.userKanbans;
     const userKanbanListButton = props.userKanbanListButton;
+    const addNewKanbanButtonHandler = props.addNewKanbanButtonHandler
+    const addNewKanbanVariable = props.addNewKanbanVariable;
+    const handleSubmit = props.handleSubmit;
+    const submit = props.submit;
+    const handleChange = props.handleChange;
+    console.log(addNewKanbanVariable);
     return (
         <div>
             <ListElement
                 userKanbans={userKanbans}
                 userKanbanListButton={userKanbanListButton} />
-            <button>Add new kanban</button>
+            {addNewKanbanVariable === true && !submit ?
+                <NewListElement
+                    handleSubmit={handleSubmit}
+                    handleValueChange={handleChange} /> : null}
+            <button onClick={() => addNewKanbanButtonHandler()}>Add new kanban</button>
         </div>
     )
 }
