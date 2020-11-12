@@ -3,16 +3,30 @@ import '../componentsStyle/SingleTables.css'
 
 
 const Tasks = (props) => {
+    // map?
 
-    const task = <div>task</div>
+    console.log(props.kanbanTablesContent);
+
+    const task = props.kanbanTablesContent.map((item, index) => (
+        <div className="taskContainer" key={index}>
+            <div>
+                <span>{item.issue.name}</span>
+            </div>
+            <div>
+                date: {item.issue.creation_date}
+            </div>
+        </div>
+
+    ))
+
     return task;
 }
 
 
 const SingleTables = (props) => {
     const kanbanTablesContent = props.kanbanTablesContent
-    const title = props.title
     console.log(kanbanTablesContent);
+    const title = props.title
     const tables = (
         <div className="singleTableStyle">
             <div className="tableTitle">

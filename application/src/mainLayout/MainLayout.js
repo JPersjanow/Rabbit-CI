@@ -42,24 +42,30 @@ class MainLayout extends React.Component {
         // console.log(kanbanId);
         const userTables = this.state.userKanbans;
         const chooseKanban = userTables.filter(item => item.kanban.info.id === kanbanId); //
-        // console.log(chooseKanban);
         const thiskanbanName = chooseKanban[0].kanban.info.name;
-        const todOTable = chooseKanban[0].kanban.todo;
-        const doingTable = chooseKanban[0].kanban.doing;
-        const doneTable = chooseKanban[0].kanban.done;
-        const chooseKanbanIssue = { toDo: todOTable, doing: doingTable, done: doneTable };
-        // console.log(chooseKanbanIssue);
-        this.setState({
-            kanbanTablesContent: chooseKanbanIssue,
-            userKanbansPage: false,
-            userKanbansTablePage: true,
-            singleKanbanName: thiskanbanName,
-        })
-
+        // console.log(chooseKanban);
+        const queryChoosenKanbanIssue = `http://localhost:5000/api/v1/resources/kanbans/${kanbanId}/issues`
+        fetch(queryChoosenKanbanIssue).then(response => {
+            if (response.ok) {
+                return response
+            }
+            throw Error(response.status)
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data);
+                this.setState({
+                    kanbanTablesContent: data,
+                    userKanbansPage: false,
+                    userKanbansTablePage: true,
+                    singleKanbanName: thiskanbanName,
+                })
+            })
+            .catch(error => console.log(error))
     }
 
     handleKanbanListButtonBack = () => {
         this.setState({
+            kanbanTablesContent: [],
             userKanbansPage: true,
             userKanbansTablePage: false,
             singleKanbanName: "",
@@ -116,6 +122,11 @@ class MainLayout extends React.Component {
         }
 
     }
+
+    /*handleGetChoosenKanbansIssue = (id) = {
+        console.log()
+
+    }*/
 
     handleCancelButton = () => {
         this.setState({

@@ -7,12 +7,16 @@ const KanbanTables = (props) => {
     const userKanbanListButtonBackHandler = props.userKanbanListButtonBackHandler;
     const kanbanTablesContent = props.kanbanTablesContent;
     console.log(kanbanTablesContent);
-    const toDoTable = kanbanTablesContent.toDo;
-    const doing = kanbanTablesContent.doing;
-    const done = kanbanTablesContent.done
+
+
+    const toDoTable = kanbanTablesContent.filter(item => item.issue.stage === "todo");
+    const doingTable = kanbanTablesContent.filter(item => item.issue.stage === "doing");
+    const doneTable = kanbanTablesContent.filter(item => item.issue.stage === "done");
+
     const doToTitle = "ToDO";
     const doingTitle = "Doing";
     const doneTitle = "Done";
+
     return (
         <div className="kanbanTablesStyle">
             <div className="backButtonContainer">
@@ -26,8 +30,8 @@ const KanbanTables = (props) => {
             </div>
             <div className="kanbanTablesContainer">
                 <SingleTables kanbanTablesContent={toDoTable} title={doToTitle} />
-                <SingleTables kanbanTablesContent={doing} title={doingTitle} />
-                <SingleTables kanbanTablesContent={done} title={doneTitle} />
+                <SingleTables kanbanTablesContent={doingTable} title={doingTitle} />
+                <SingleTables kanbanTablesContent={doneTable} title={doneTitle} />
             </div>
         </div>
     )
