@@ -71,6 +71,3 @@ def return_xml_attribute_value(xml_file: str, attribute_name: str) -> str:
     for child in root:
         if child.tag == attribute_name:
             return child.text
-
-if __name__ == '__main__':
-    update_xml_attribute('/home/persil/rabbit/kanbans/1/config.xml', 'name', 'new_value')

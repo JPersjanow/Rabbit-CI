@@ -111,12 +111,14 @@ class IssueCreator:
             raise FileExistsError("Issue already exists!")
 
     @staticmethod
-    def rename_issue(issue_directory: str, issue_name: str, new_issue_name: str):
+    def rename_issue(issue_directory: str, issue_name: str, new_issue_name: str) -> str:
         new_issue_directory = issue_directory.replace(issue_name, new_issue_name)
         update_xml_attribute(
             xml_file=issue_directory, attribute_name="name", new_value=new_issue_name
         )
         os.rename(issue_directory, new_issue_directory)
+
+        return new_issue_name
 
     @staticmethod
     def create_xml_tree_for_issue_config(
