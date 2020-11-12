@@ -50,11 +50,14 @@ class KanbansAll(Resource):
 
     @ns.expect(kanban_model)
     @api.response(201, "New kanban board created")
+    @api.response(400, "Bad request")
     @api.response(500, "Kanban could not be created")
     def post(self):
         """Create new kanban"""
         kanban_creator = KanbanCreator()
         logger.info("Creating new kanban")
+        if api.payload["name"].replace(" ", "") == "":
+            return {"response": "Name cannot be null or whitespaces only"}, 400
         try:
             new_kanban_dir, new_kanban_id = kanban_creator.create_new_kanban_folder(
                 kanbans_directory=config.kanbans_directory
