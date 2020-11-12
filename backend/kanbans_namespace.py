@@ -5,7 +5,7 @@ from flask import jsonify
 from tools.xml_tools import update_xml_attribute
 from tools.config_reader import ConfigReader
 from tools.kanbans_tools import KanbanFinder, KanbanCreator, KanbanDeleter
-from api import api
+from api import api, logger
 
 ns = api.namespace(
     "resources/kanbans",
@@ -32,6 +32,7 @@ class KanbansAll(Resource):
     def get(self):
         """Returns all kanban boards with info"""
         kanban_finder = KanbanFinder()
+        logger.info("Fetching all kanbans info")
         try:
             all_kanbans_info_list = kanban_finder.return_all_kanabans_info(
                 kanbans_directory=config.kanbans_directory
@@ -39,8 +40,10 @@ class KanbansAll(Resource):
             print(all_kanbans_info_list)
             response = jsonify(all_kanbans_info_list)
             print(response)
-            # response.headers.add("Access-Control-Allow-Origin", "*")
+            response.headers.add("Access-Control-Allow-Origin", "*")
         except Exception as e:
+            logger.error("Coulnd't fetch kanbans")
+            logger.exception(e)
             return {"response": f"Kanbans couldn't be fetched! {e}"}, 500
 
         return response
@@ -51,20 +54,25 @@ class KanbansAll(Resource):
     def post(self):
         """Create new kanban"""
         kanban_creator = KanbanCreator()
+        logger.info("Creating new kanban")
         try:
             new_kanban_dir, new_kanban_id = kanban_creator.create_new_kanban_folder(
                 kanbans_directory=config.kanbans_directory
             )
         except FileExistsError:
+            logger.error("Kanban already exists!")
             return {
                 "response": "Kanban could not be created! Kanban already exists"
             }, 500
         except Exception as e:
+            logger.error("Couldn't create kanban!")
+            logger.exception(e)
             return {
                 "response": "Kanban could not be created!",
                 "exception": str(e),
             }, 500
         try:
+            logger.info("Creating config xml for new kanban")
             config_tree = kanban_creator.create_xml_tree_for_kanban_config(
                 kanban_name=api.payload["name"],
                 kanban_id=new_kanban_id,
@@ -74,6 +82,8 @@ class KanbansAll(Resource):
                 new_kanban_directory=new_kanban_dir, config_xml_tree=config_tree
             )
         except Exception as e:
+            logger.error("Couldn't create new kanban config! Deleting kanban")
+            logger.exception(e)
             os.rmdir(new_kanban_dir)
             return {
                 "response": "Failed while creating config.xml file, deleting kanban.",
@@ -94,6 +104,7 @@ class KanbanSingle(Resource):
     def get(self, kanban_id):
         """Returns kanban board with given id"""
         kanban_finder = KanbanFinder()
+        logger.info(f"Fetching kanban with id {kanban_id} info")
         kanban_directory, kanban_found = kanban_finder.find_kanban_dir_with_id(
             kanban_id=kanban_id, kanbans_directory=config.kanbans_directory
         )
@@ -106,6 +117,7 @@ class KanbanSingle(Resource):
             response.headers.add("Access-Control-Allow-Origin", "*")
             return response
         else:
+            logger.warning(f"Kanban with id {kanban_id} not found!")
             return {"response": f"Kanban board with id {kanban_id} not found"}, 404
 
     @ns.expect(kanban_model)
@@ -113,6 +125,7 @@ class KanbanSingle(Resource):
     def put(self, kanban_id):
         """Updates kanban board with given id"""
         kanban_finder = KanbanFinder()
+        logger.info(f"Updating kanban with id {kanban_id}")
         kanban_directory, kanban_found = kanban_finder.find_kanban_dir_with_id(
             kanban_id=kanban_id, kanbans_directory=config.kanbans_directory
         )
@@ -131,17 +144,22 @@ class KanbanSingle(Resource):
                         "response_desc"
                     ] = f"Updated with {api.payload['description']}"
             except KeyError:
+                logger.error("Key not matching model used!")
+                logger.exception(e)
                 return {"response": "Wrong key! Use given model"}, 404
 
             return response, 201
 
         else:
+            logger.warning(f"Kanban with id {kanban_id} not found!")
             return {"response": f"Kanban board with id {kanban_id} not found"}, 404
 
     @api.response(200, "Kanban deleted")
     @api.response(404, "Kanban not found")
     @api.response(500, "Unable to delte kanban")
     def delete(self, kanban_id):
+        """ Delete kanban board with given id """
+        logger.info(f"Deleting kanban with id {kanban_id}")
         try:
             kanban_deleter = KanbanDeleter()
             kanban_deleter.delete_kanban(
@@ -149,6 +167,9 @@ class KanbanSingle(Resource):
             )
             return {"response": "Kanban deleted"}, 200
         except FileNotFoundError:
+            logger.warning(f"Kanban with id {kanban_id} not found")
             return {"response": "Kanban coulnd't be found"}, 404
         except Exception as e:
+            logger.error("Couldn't delete kanban")
+            logger.exception(e)
             return {"response": "Couldn't delete kanban", "exception": str(e)}, 500

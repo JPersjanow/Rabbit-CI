@@ -27,6 +27,7 @@ class DirectoryCreator:
 
         self.kanban_directory = os.path.join(self.installation_directory, "kanbans")
         self.config_directory = os.path.join(self.installation_directory, "config")
+        self.log_directory = os.getcwd()
 
         if args.debug == "enable":
             self.debug = True
@@ -118,6 +119,15 @@ class DirectoryCreator:
         except Exception as e:
             self.logger.exception(e)
 
+        self.logger.info("Creating log directory")
+        try:
+            os.mkdir(self.log_directory)
+            self.logger.info(f"Config directory created in {self.log_directory}")
+        except FileExistsError:
+            self.logger.warning(f"{self.log_directory} already exists!")
+        except Exception as e:
+            self.logger.exception(e)
+
     def set_config_env_variable(self):
         if self.platform == "Linux":
             self.logger.info("Linux platform detected")
@@ -132,6 +142,7 @@ class DirectoryCreator:
             installation_directory=self.installation_directory,
             config_directory=self.config_directory,
             kanbans_directory=self.kanban_directory,
+            log_directory=self.log_directory
         )
         cfg_creator.create_config_file()
 
