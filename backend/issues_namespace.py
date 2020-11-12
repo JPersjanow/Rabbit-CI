@@ -59,7 +59,7 @@ class IssuesAll(Resource):
             except Exception as e:
                 logger.error("Unable to fetch issues!")
                 logger.exception(e)
-                return {"response": "Unable fetch issues", "exception": str(e)}, 500
+                return {"response": "Unable to fetch issues", "exception": str(e)}, 500
         else:
             logger.warning(f"Unable to fetch issues! Kanban with id {kanban_id} not found")
             return {"response": "Kanban id not found"}, 400
