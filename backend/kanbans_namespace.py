@@ -50,11 +50,14 @@ class KanbansAll(Resource):
 
     @ns.expect(kanban_model)
     @api.response(201, "New kanban board created")
+    @api.response(400, "Bad request")
     @api.response(500, "Kanban could not be created")
     def post(self):
         """Create new kanban"""
         kanban_creator = KanbanCreator()
         logger.info("Creating new kanban")
+        if api.payload["name"].replace(" ", "") == "":
+            return {"response": "Name cannot be null or whitespaces only"}, 400
         try:
             new_kanban_dir, new_kanban_id = kanban_creator.create_new_kanban_folder(
                 kanbans_directory=config.kanbans_directory
@@ -62,13 +65,13 @@ class KanbansAll(Resource):
         except FileExistsError:
             logger.error("Kanban already exists!")
             return {
-                "response": "Kanban could not be created! Kanban already exists"
+                "response": "Unable to create! Kanban already exists"
             }, 500
         except Exception as e:
             logger.error("Couldn't create kanban!")
             logger.exception(e)
             return {
-                "response": "Kanban could not be created!",
+                "response": "Unable to create",
                 "exception": str(e),
             }, 500
         try:
@@ -91,7 +94,7 @@ class KanbansAll(Resource):
             }, 500
 
         return {
-            "response": f"New kanban board with id {new_kanban_id} under {new_kanban_dir} created"
+            "response": f"New kanban board with id {new_kanban_id} created"
         }, 201
 
 
@@ -100,7 +103,7 @@ class KanbanSingle(Resource):
     """ Endpoints for specific kanbans """
 
     @api.response(200, "Kanban board found")
-    @api.response(404, "Kanban board with id not found")
+    @api.response(400, "Kanban id not found")
     def get(self, kanban_id):
         """Returns kanban board with given id"""
         kanban_finder = KanbanFinder()
@@ -118,9 +121,11 @@ class KanbanSingle(Resource):
             return response
         else:
             logger.warning(f"Kanban with id {kanban_id} not found!")
-            return {"response": f"Kanban board with id {kanban_id} not found"}, 404
+            return {"response": "Kanban id not found"}, 400
 
     @ns.expect(kanban_model)
+    @api.response(204, "Kanban updated")
+    @api.response(400, "Bad request")
     # @ns.marshal_with(kanban) THIS IS RETURNED
     def put(self, kanban_id):
         """Updates kanban board with given id"""
@@ -132,8 +137,11 @@ class KanbanSingle(Resource):
         response = dict()
         if kanban_found:
             config_file_dir = os.path.join(kanban_directory, "config.xml")
+            logger.info(config_file_dir)
             try:
-                if api.payload["name"] != "string":
+                if api.payload["name"].replace(" ", "") == "":
+                    return {"response": "Name cannot be null or whitespaces only"}, 400
+                elif api.payload["name"] != "string":
                     update_xml_attribute(config_file_dir, "name", api.payload["name"])
                     response["response_name"] = f"Updated with {api.payload['name']}"
                 if api.payload["description"] != "string":
@@ -143,20 +151,20 @@ class KanbanSingle(Resource):
                     response[
                         "response_desc"
                     ] = f"Updated with {api.payload['description']}"
-            except KeyError:
+            except KeyError as ke:
                 logger.error("Key not matching model used!")
-                logger.exception(e)
-                return {"response": "Wrong key! Use given model"}, 404
+                logger.exception(ke)
+                return {"response": "Wrong key! Use given model"}, 400
 
-            return response, 201
+            return response, 204
 
         else:
             logger.warning(f"Kanban with id {kanban_id} not found!")
-            return {"response": f"Kanban board with id {kanban_id} not found"}, 404
+            return {"response": "Kanban id not found"}, 404
 
-    @api.response(200, "Kanban deleted")
-    @api.response(404, "Kanban not found")
-    @api.response(500, "Unable to delte kanban")
+    @api.response(204, "Kanban deleted")
+    @api.response(400, "Kanban id not found")
+    @api.response(500, "Unable to delete kanban")
     def delete(self, kanban_id):
         """ Delete kanban board with given id """
         logger.info(f"Deleting kanban with id {kanban_id}")
@@ -165,11 +173,11 @@ class KanbanSingle(Resource):
             kanban_deleter.delete_kanban(
                 kanbans_directory=config.kanbans_directory, kanban_id=kanban_id
             )
-            return {"response": "Kanban deleted"}, 200
+            return {"response": "Kanban deleted"}, 204
         except FileNotFoundError:
             logger.warning(f"Kanban with id {kanban_id} not found")
-            return {"response": "Kanban coulnd't be found"}, 404
+            return {"response": "Kanban id not found"}, 400
         except Exception as e:
-            logger.error("Couldn't delete kanban")
+            logger.error("Unable to delte kanban")
             logger.exception(e)
-            return {"response": "Couldn't delete kanban", "exception": str(e)}, 500
+            return {"response": "Unable to delte kanban", "exception": str(e)}, 500

@@ -12,11 +12,17 @@ def prettify(elem) -> str:
 def update_xml_attribute(xml_file: str, attribute_name: str, new_value: str) -> None:
     tree = ET.parse(xml_file)
     root = tree.getroot()
+    found = False
 
     for child in root:
         if child.tag == attribute_name:
+            found = True
             child.text = new_value
-
+    if not found:
+        for child in root:
+            for child_n in child:
+                if child_n.tag == attribute_name:
+                    child_n.text = new_value
     tree.write(xml_file)
 
 
