@@ -86,7 +86,8 @@ class IssuesAll(Resource):
                 kanbans_directory=config.kanbans_directory, kanban_id=kanban_id
             )
         except FileNotFoundError as fe:
-            logger.error(f"Unable to create issue directory! Kanban with id {kanban_id} doesn't exist")
+            logger.error(f"Unable to create issue directory! " \
+                f"Kanban with id {kanban_id} doesn't exist")
             logger.exception(fe)
             return {"response": "Kanban id not found"}, 400
         except Exception as e:
@@ -195,7 +196,7 @@ class IssueSingle(Resource):
             return 204
         else:
             logger.warning("Issue not found!")
-            return {"response": f"Issue not found!"}, 404
+            return {"response": "Issue not found!"}, 404
 
     @api.response(204, "Issue deleted")
     @api.response(400, "Issue not found")
