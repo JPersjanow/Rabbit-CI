@@ -64,9 +64,7 @@ class KanbansAll(Resource):
             )
         except FileExistsError:
             logger.error("Kanban already exists!")
-            return {
-                "response": "Unable to create! Kanban already exists"
-            }, 500
+            return {"response": "Unable to create! Kanban already exists"}, 500
         except Exception as e:
             logger.error("Couldn't create kanban!")
             logger.exception(e)
@@ -93,9 +91,7 @@ class KanbansAll(Resource):
                 "exception": str(e),
             }, 500
 
-        return {
-            "response": f"New kanban board with id {new_kanban_id} created"
-        }, 201
+        return {"response": f"New kanban board with id {new_kanban_id} created"}, 201
 
 
 @ns.route("/<int:kanban_id>")

@@ -142,7 +142,7 @@ class DirectoryCreator:
             installation_directory=self.installation_directory,
             config_directory=self.config_directory,
             kanbans_directory=self.kanban_directory,
-            log_directory=self.log_directory
+            log_directory=self.log_directory,
         )
         cfg_creator.create_config_file()
 

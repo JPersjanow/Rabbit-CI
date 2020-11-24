@@ -6,6 +6,7 @@ from issues_namespace import ns as issues_namespace
 
 app = Flask(__name__)
 
+
 def initialize_app(flask_app):
     logger.info("Configuring api server")
     blueprint = Blueprint("api", __name__, url_prefix="/api/v1")

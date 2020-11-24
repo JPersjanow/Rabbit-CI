@@ -10,7 +10,11 @@ class ConfigCreator:
     """ Class for creating config file used by all Rabbit infrastructure"""
 
     def __init__(
-        self, installation_directory: str, config_directory: str, kanbans_directory: str, log_directory: str
+        self,
+        installation_directory: str,
+        config_directory: str,
+        kanbans_directory: str,
+        log_directory: str,
     ):
         self.installation_directory = installation_directory
         self.config_directory = config_directory
