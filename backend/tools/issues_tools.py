@@ -25,11 +25,14 @@ except ModuleNotFoundError:
         remove_xml_attribute_with_value,
     )
 
+
 class Stages(Enum):
     """ Stages enum class for keeping them in a proper structure rather than string """
+
     ToDo = "todo"
     Doing = "doing"
     Done = "done"
+
 
 class IssueCreator:
     """ Class consiting of methods for creating issues """
@@ -50,7 +53,7 @@ class IssueCreator:
         kanban_id: id,
         issue_id: id,
         issue_description: str = "",
-        creator: str = "unknown"
+        creator: str = "unknown",
     ) -> ET.ElementTree:
         """ Method for creating xml tree for issue config """
         date = datetime.date(datetime.now())
@@ -75,7 +78,7 @@ class IssueCreator:
         kanban_id: int,
         issue_name: str,
         issue_description: str = "",
-        creator: str = "unknown"
+        creator: str = "unknown",
     ):
         issues_directory = os.path.join(kanbans_directory, str(kanban_id), "issues")
         issue_id = IssueFinder.define_next_issue_id(issues_directory)
@@ -85,12 +88,13 @@ class IssueCreator:
             issue_id=issue_id,
             kanban_id=kanban_id,
             issue_description=issue_description,
-            creator=creator
+            creator=creator,
         )
         issue_config = os.path.join(issues_directory, f"{issue_id}.xml")
         if issue_xml_tree is not None:
             with open(issue_config, "w+") as issue_config_file:
                 issue_config_file.write(issue_xml_tree)
+
 
 class IssueFinder:
     """ Class consisting of methods for finding issues and issues related objects """
@@ -103,7 +107,9 @@ class IssueFinder:
     @staticmethod
     def get_all_issues_ids(issues_directory: str) -> list:
         all_issues = glob(os.path.join(issues_directory, "*"))
-        all_issues_id = [int(os.path.split(issue)[1].replace(".xml", "")) for issue in all_issues]
+        all_issues_id = [
+            int(os.path.split(issue)[1].replace(".xml", "")) for issue in all_issues
+        ]
         return all_issues_id
 
     @staticmethod
@@ -131,18 +137,26 @@ class IssueFinder:
         return issue_info
 
     @staticmethod
-    def return_issues_directory_for_kanban(kanbans_directory: str, kanban_id: int) -> str:
+    def return_issues_directory_for_kanban(
+        kanbans_directory: str, kanban_id: int
+    ) -> str:
         issues_directory = os.path.join(kanbans_directory, str(kanban_id), "issues")
         return issues_directory
 
-    def return_issue_info_for_kanban(self, kanbans_directory: str, kanban_id: int, issue_id) -> list:
+    def return_issue_info_for_kanban(
+        self, kanbans_directory: str, kanban_id: int, issue_id
+    ) -> list:
         kanban_directory = os.path.join(kanbans_directory, str(kanban_id))
-        issue_directory = os.path.join(kanban_directory, "issues", f"{str(issue_id)}.xml")
+        issue_directory = os.path.join(
+            kanban_directory, "issues", f"{str(issue_id)}.xml"
+        )
         issue_info = self.return_issue_info(issue_directory=issue_directory)
 
         return issue_info
 
-    def return_all_issues_info_for_kanban(self, kanbans_directory: str, kanban_id: int) -> list:
+    def return_all_issues_info_for_kanban(
+        self, kanbans_directory: str, kanban_id: int
+    ) -> list:
         kanbans_directory = os.path.join(kanbans_directory, str(kanban_id))
         issues_directory = os.path.join(kanbans_directory, "issues")
         all_issues_directories = self.get_all_issues_files_with_dir(
@@ -151,41 +165,64 @@ class IssueFinder:
         all_issues_directories = sorted(all_issues_directories)
         all_issues_info = []
         for issue_directory in all_issues_directories:
-            all_issues_info.append(self.return_issue_info(
-                issue_directory=issue_directory
-            ))
+            all_issues_info.append(
+                self.return_issue_info(issue_directory=issue_directory)
+            )
 
         return all_issues_info
 
+
 class IssueUpdater:
     """ Class consisting of methods for updating issues and issues related objects """
-    
+
     @staticmethod
-    def update_issue_for_kanban(kanbans_directory: str, kanban_id: int, issue_id: int,
-                                attribute_name: str, attribute_value: str):
-        issue_file_with_dir = os.path.join(kanbans_directory, str(kanban_id), "issues", f"{str(issue_id)}.xml")
-        update_xml_attribute(xml_file=issue_file_with_dir,attribute_name=attribute_name, new_value=attribute_value)
-    
+    def update_issue_for_kanban(
+        kanbans_directory: str,
+        kanban_id: int,
+        issue_id: int,
+        attribute_name: str,
+        attribute_value: str,
+    ):
+        issue_file_with_dir = os.path.join(
+            kanbans_directory, str(kanban_id), "issues", f"{str(issue_id)}.xml"
+        )
+        update_xml_attribute(
+            xml_file=issue_file_with_dir,
+            attribute_name=attribute_name,
+            new_value=attribute_value,
+        )
+
     @staticmethod
-    def update_issue(issues_directory: str, issue_id: int,
-                    attribute_name: str, attribute_value: str):
+    def update_issue(
+        issues_directory: str, issue_id: int, attribute_name: str, attribute_value: str
+    ):
         issue_file_with_dir = os.path.join(issues_directory, f"{str(issue_id)}.xml")
-        update_xml_attribute(xml_file=issue_file_with_dir,attribute_name=attribute_name, new_value=attribute_value)
+        update_xml_attribute(
+            xml_file=issue_file_with_dir,
+            attribute_name=attribute_name,
+            new_value=attribute_value,
+        )
+
 
 class IssueDeleter:
     """ Class consisting of methods for deleting issues and issues related objects """
 
     @staticmethod
     def delete_issue_for_kanban(kanbans_directory: str, kanban_id: int, issue_id: int):
-        issue_file_with_dir = os.path.join(kanbans_directory, str(kanban_id), "issues", f"{str(issue_id)}.xml")
+        issue_file_with_dir = os.path.join(
+            kanbans_directory, str(kanban_id), "issues", f"{str(issue_id)}.xml"
+        )
         os.remove(issue_file_with_dir)
+
 
 class IssueStageHandler:
     """ Class consisting of methods for handling issues stages and issues stages related objects """
 
     @staticmethod
     def check_stage(kanbans_directory: str, kanban_id: int, issue_id: int) -> str:
-        issue_xml = os.path.join(kanbans_directory, str(kanban_id), "issues", f"{str(issue_id)}.xml")
+        issue_xml = os.path.join(
+            kanbans_directory, str(kanban_id), "issues", f"{str(issue_id)}.xml"
+        )
 
         return return_xml_attribute_value(xml_file=issue_xml, attribute_name="stage")
 
@@ -194,7 +231,9 @@ class IssueStageHandler:
         kanbans_directory: str, kanban_id: int, issue_id: int, stage_to_assign: str
     ):
         kanban_config = os.path.join(kanbans_directory, str(kanban_id), "config.xml")
-        issue_xml = os.path.join(kanbans_directory, str(kanban_id), "issues", f"{issue_id}.xml")
+        issue_xml = os.path.join(
+            kanbans_directory, str(kanban_id), "issues", f"{issue_id}.xml"
+        )
         current_stage = return_xml_attribute_value(
             xml_file=issue_xml, attribute_name="stage"
         )

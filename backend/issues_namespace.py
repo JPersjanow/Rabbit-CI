@@ -9,7 +9,7 @@ from tools.issues_tools import (
     IssueUpdater,
     IssueDeleter,
     IssueStageHandler,
-    Stages
+    Stages,
 )
 from tools.kanbans_tools import KanbanFinder
 from tools.config_reader import ConfigReader
@@ -30,14 +30,16 @@ issue_model_stage = api.model(
     "Issue-stage Model",
     {
         "stage": fields.String(required=True, description="Stage name"),
-    }
+    },
 )
 
 config = ConfigReader()
 
+
 @ns.route("/<int:kanban_id>/issues")
 class IssuesAll(Resource):
     """ Endpoints for issues """
+
     @api.response(400, "Bad request")
     @api.response(500, "Unable to fetch issues")
     def get(self, kanban_id):
@@ -63,7 +65,9 @@ class IssuesAll(Resource):
                 logger.exception(e)
                 return {"response": "Unable to fetch issues"}, 500
         else:
-            logger.warning(f"Unable to fetch issues! Kanban with id {kanban_id} not found")
+            logger.warning(
+                f"Unable to fetch issues! Kanban with id {kanban_id} not found"
+            )
             return {"response": "Kanban id not found"}, 400
 
     @ns.expect(issue_model)
@@ -71,7 +75,10 @@ class IssuesAll(Resource):
     @api.response(400, "Bad request")
     @api.response(500, "Unable to create issue")
     def post(self, kanban_id):
-        if api.payload["name"].replace(" ", "") == "" or api.payload["creator"].replace(" ", "") == "":
+        if (
+            api.payload["name"].replace(" ", "") == ""
+            or api.payload["creator"].replace(" ", "") == ""
+        ):
             return {"response": "Name/creator cannot be null or whitespaces only"}, 400
         logger.info("Creating issue xml config")
         issue_creator = IssueCreator()
@@ -82,8 +89,10 @@ class IssuesAll(Resource):
                 kanbans_directory=config.kanbans_directory, kanban_id=kanban_id
             )
         except FileNotFoundError as fe:
-            logger.error(f"Unable to create issue directory! " \
-                f"Kanban with id {kanban_id} doesn't exist")
+            logger.error(
+                f"Unable to create issue directory! "
+                f"Kanban with id {kanban_id} doesn't exist"
+            )
             logger.exception(fe)
             return {"response": "Kanban id not found"}, 400
         except Exception as e:
@@ -98,14 +107,17 @@ class IssuesAll(Resource):
                 kanban_id=kanban_id,
                 issue_description=api.payload["description"],
                 issue_name=api.payload["name"],
-                creator=api.payload["creator"]
+                creator=api.payload["creator"],
             )
             return {
                 "response": f"Issue with name {api.payload['name']} for kanban with id {kanban_id} created!"
             }, 201
         except FileExistsError as fe:
             logger.warning("Issue already exists!")
-            return {"response": "Unable to create new issue!", "exception": str(fe)}, 500
+            return {
+                "response": "Unable to create new issue!",
+                "exception": str(fe),
+            }, 500
         except Exception as e:
             logger.error("Unable to create issue!")
             return {"response": "Unable to create new issue!", "exception": str(e)}, 500
@@ -114,6 +126,7 @@ class IssuesAll(Resource):
 @ns.route("/<int:kanban_id>/issues/<int:issue_id>")
 class IssueSingle(Resource):
     """ Endpoints for singular issue """
+
     @api.response(400, "Bad request")
     @api.response(500, "Unable to fetch issue")
     def get(self, kanban_id, issue_id):
@@ -133,9 +146,13 @@ class IssueSingle(Resource):
             )
             if issue_check:
                 try:
-                    logger.info(f"Fetching issues with id {issue_id} for kanban with id {kanban_id}")
+                    logger.info(
+                        f"Fetching issues with id {issue_id} for kanban with id {kanban_id}"
+                    )
                     issue_info_list = issue_finder.return_issue_info_for_kanban(
-                        kanbans_directory=config.kanbans_directory, kanban_id=kanban_id, issue_id=issue_id
+                        kanbans_directory=config.kanbans_directory,
+                        kanban_id=kanban_id,
+                        issue_id=issue_id,
                     )
                     response = jsonify(issue_info_list)
                     response.headers.add("Access-Control-Allow-Origin", "*")
@@ -145,10 +162,14 @@ class IssueSingle(Resource):
                     logger.exception(e)
                     return {"response": "Unable to fetch issues"}, 500
             else:
-                logger.warning(f"Unable to fetch issues! Issue with id {issue_id} not found")
+                logger.warning(
+                    f"Unable to fetch issues! Issue with id {issue_id} not found"
+                )
                 return {"response": "Issue id not found"}, 400
         else:
-            logger.warning(f"Unable to fetch issues! Kanban with id {kanban_id} not found")
+            logger.warning(
+                f"Unable to fetch issues! Kanban with id {kanban_id} not found"
+            )
             return {"response": "Kanban id not found"}, 400
 
     @ns.expect(issue_model)
@@ -176,11 +197,17 @@ class IssueSingle(Resource):
                 try:
                     if api.payload["description"] != "string":
                         issue_updater.update_issue(
-                            issues_directory, issue_id, "description", api.payload["description"]
+                            issues_directory,
+                            issue_id,
+                            "description",
+                            api.payload["description"],
                         )
                     if api.payload["creator"] != "string":
                         issue_updater.update_issue(
-                            issues_directory, issue_id, "creator", api.payload["creator"]
+                            issues_directory,
+                            issue_id,
+                            "creator",
+                            api.payload["creator"],
                         )
                     if api.payload["name"] != "string":
                         issue_updater.update_issue(
@@ -197,10 +224,14 @@ class IssueSingle(Resource):
 
                 return 204
             else:
-                logger.warning(f"Unable to update issues! Issue with id {issue_id} not found")
+                logger.warning(
+                    f"Unable to update issues! Issue with id {issue_id} not found"
+                )
                 return {"response": "Issue id not found"}, 400
         else:
-            logger.warning(f"Unable to fetch issues! Kanban with id {kanban_id} not found")
+            logger.warning(
+                f"Unable to fetch issues! Kanban with id {kanban_id} not found"
+            )
             return {"response": "Kanban id not found"}, 400
 
     @api.response(204, "Issue deleted")
@@ -217,9 +248,15 @@ class IssueSingle(Resource):
         if kanban_check:
             try:
                 issue_deleter = IssueDeleter()
-                issue_deleter.delete_issue_for_kanban(kanbans_directory=config.kanbans_directory, kanban_id=kanban_id, issue_id=issue_id)
+                issue_deleter.delete_issue_for_kanban(
+                    kanbans_directory=config.kanbans_directory,
+                    kanban_id=kanban_id,
+                    issue_id=issue_id,
+                )
             except FileNotFoundError as fe:
-                logger.warning(f"Unable to update issues! Issue with id {issue_id} not found")
+                logger.warning(
+                    f"Unable to update issues! Issue with id {issue_id} not found"
+                )
                 logger.exception(fe)
                 return {"response": "Issue id not found"}, 400
             except Exception as e:
@@ -228,12 +265,16 @@ class IssueSingle(Resource):
                 return {"response": "Couldn't update issue"}, 500
             return 204
         else:
-            logger.warning(f"Unable to fetch issues! Kanban with id {kanban_id} not found")
+            logger.warning(
+                f"Unable to fetch issues! Kanban with id {kanban_id} not found"
+            )
             return {"response": "Kanban id not found"}, 400
+
 
 @ns.route("//<int:kanban_id>/issues/<int:issue_id>/stage")
 class IssueSingleStage(Resource):
     """ Endpoint for getting stage of certain issue"""
+
     @api.response(400, "Bad request")
     @api.response(500, "Unable to fetch stage")
     def get(self, kanban_id, issue_id):
@@ -265,7 +306,10 @@ class IssueSingleStage(Resource):
     @api.response(400, "Bad request")
     @api.response(500, "Unable to change stage")
     def put(self, kanban_id, issue_id):
-        if api.payload["stage"].replace(" ", "") == "" or api.payload["stage"] == "string":
+        if (
+            api.payload["stage"].replace(" ", "") == ""
+            or api.payload["stage"] == "string"
+        ):
             return {"response": "Stage cannot be null or whitespaces only"}, 400
 
         issue_stage_hand = IssueStageHandler()
@@ -275,7 +319,7 @@ class IssueSingleStage(Resource):
                 kanbans_directory=config.kanbans_directory,
                 kanban_id=kanban_id,
                 issue_id=issue_id,
-                stage_to_assign=api.payload["stage"]
+                stage_to_assign=api.payload["stage"],
             )
             return 201
         except AttributeError:
