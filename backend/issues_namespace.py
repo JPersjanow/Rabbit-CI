@@ -318,7 +318,10 @@ class IssueSingleStage(Resource):
             or api.payload["stage"] == "string"
         ):
             return {"response": "Stage cannot be null or whitespaces only"}, 400
-
+        elif api.payload["stage"] not in [stage.value for stage in Stages]:
+            return {
+                "response": "Stage cannot be anything other than todo, done or doing"
+            }, 400
         issue_stage_hand = IssueStageHandler()
         logger.info(f"Changing issue with id {issue_id} current stage")
         try:

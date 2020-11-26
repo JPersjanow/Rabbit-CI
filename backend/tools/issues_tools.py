@@ -264,14 +264,3 @@ class IssueStageHandler:
             attribute_name_delete="issue_id",
             attribute_value_delete=str(issue_id),
         )
-
-
-if __name__ == "__main__":
-    isfind = IssueFinder()
-    print(
-        int(
-            isfind.define_next_issue_id(
-                issues_directory="/home/persil/rabbit/kanbans/2/issues"
-            )
-        )
-    )
