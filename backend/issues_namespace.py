@@ -41,6 +41,7 @@ config = ConfigReader()
 #         limit = request.args.get("limit")
 #         print(limit)
 
+
 @ns.route("/<int:kanban_id>/issues")
 class IssuesAll(Resource):
     """ Endpoints for issues """

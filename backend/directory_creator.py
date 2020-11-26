@@ -33,7 +33,6 @@ class DirectoryCreator:
         # AUTOMATION module
         self.jobs_directory = os.path.join(self.installation_directory, "jobs")
 
-
         if args.debug == "enable":
             self.debug = True
         else:
@@ -161,7 +160,10 @@ class DirectoryCreator:
         cfg_creator.create_config_file()
 
     def move_log(self):
-        os.rename("directory_creator.log", os.path.join(self.installation_directory, "logs", "directory_creator.log"))
+        os.rename(
+            "directory_creator.log",
+            os.path.join(self.installation_directory, "logs", "directory_creator.log"),
+        )
 
     def run(self):
         if not self.validate_directory:

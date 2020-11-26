@@ -99,8 +99,10 @@ class IssueCreator:
             with open(issue_config, "w+") as issue_config_file:
                 issue_config_file.write(issue_xml_tree)
 
-        with open(os.path.join(issues_directory, "next_issue_id"), "w+") as issue_id_file:
-            issue_id_file.write(str(issue_id+1))
+        with open(
+            os.path.join(issues_directory, "next_issue_id"), "w+"
+        ) as issue_id_file:
+            issue_id_file.write(str(issue_id + 1))
 
 
 class IssueFinder:
@@ -108,7 +110,9 @@ class IssueFinder:
 
     @staticmethod
     def define_next_issue_id(issues_directory: str) -> int:
-        with open(os.path.join(issues_directory, "next_issue_id"), "r") as issue_id_file:
+        with open(
+            os.path.join(issues_directory, "next_issue_id"), "r"
+        ) as issue_id_file:
             next_issue_id = issue_id_file.read(1)
         next_issue_id = int(next_issue_id)
         return next_issue_id
@@ -261,6 +265,13 @@ class IssueStageHandler:
             attribute_value_delete=str(issue_id),
         )
 
+
 if __name__ == "__main__":
     isfind = IssueFinder()
-    print(int(isfind.define_next_issue_id(issues_directory="/home/persil/rabbit/kanbans/2/issues")))
+    print(
+        int(
+            isfind.define_next_issue_id(
+                issues_directory="/home/persil/rabbit/kanbans/2/issues"
+            )
+        )
+    )
