@@ -81,7 +81,11 @@ class IssueCreator:
         creator: str = "unknown",
     ):
         issues_directory = os.path.join(kanbans_directory, str(kanban_id), "issues")
-        issue_id = IssueFinder.define_next_issue_id(issues_directory)
+        all_issues_id = IssueFinder.get_all_issues_ids(issues_directory)
+        if not all_issues_id:
+            issue_id = 1
+        else:
+            issue_id = IssueFinder.define_next_issue_id(issues_directory)
 
         issue_xml_tree = IssueCreator.create_xml_tree_for_issue_config(
             issue_name=issue_name,
@@ -95,18 +99,23 @@ class IssueCreator:
             with open(issue_config, "w+") as issue_config_file:
                 issue_config_file.write(issue_xml_tree)
 
+        with open(os.path.join(issues_directory, "next_issue_id"), "w+") as issue_id_file:
+            issue_id_file.write(str(issue_id+1))
+
 
 class IssueFinder:
     """ Class consisting of methods for finding issues and issues related objects """
 
     @staticmethod
     def define_next_issue_id(issues_directory: str) -> int:
-        all_issues = glob(os.path.join(issues_directory, "*"))
-        return len(all_issues) + 1
+        with open(os.path.join(issues_directory, "next_issue_id"), "r") as issue_id_file:
+            next_issue_id = issue_id_file.read(1)
+        next_issue_id = int(next_issue_id)
+        return next_issue_id
 
     @staticmethod
     def get_all_issues_ids(issues_directory: str) -> list:
-        all_issues = glob(os.path.join(issues_directory, "*"))
+        all_issues = glob(os.path.join(issues_directory, "*.xml"))
         all_issues_id = [
             int(os.path.split(issue)[1].replace(".xml", "")) for issue in all_issues
         ]
@@ -114,12 +123,12 @@ class IssueFinder:
 
     @staticmethod
     def get_all_issues_files_with_dir(issues_directory: str) -> list:
-        all_issues = glob(os.path.join(issues_directory, "*"))
+        all_issues = glob(os.path.join(issues_directory, "*.xml"))
         return all_issues
 
     @staticmethod
     def get_all_issues_files(issues_directory: str) -> list:
-        all_issues = glob(os.path.join(issues_directory, "*"))
+        all_issues = glob(os.path.join(issues_directory, "*.xml"))
         all_issues_files = [os.path.split(issue)[1] for issue in all_issues]
         return all_issues_files
 
@@ -251,3 +260,7 @@ class IssueStageHandler:
             attribute_name_delete="issue_id",
             attribute_value_delete=str(issue_id),
         )
+
+if __name__ == "__main__":
+    isfind = IssueFinder()
+    print(int(isfind.define_next_issue_id(issues_directory="/home/persil/rabbit/kanbans/2/issues")))
