@@ -20,6 +20,7 @@ class ConfigReader:
             sys.exit(1)
 
         self.installation_directory, self.kanbans_directory = self.read()
+        self.move_log()
 
     def read(self):
         self.logger.info("Reading config file for rabbit-ci")
@@ -32,3 +33,6 @@ class ConfigReader:
             config_dict["rabbit_config"]["installation_directory"],
             config_dict["rabbit_config"]["kanbans_directory"],
         )
+
+    def move_log(self):
+        os.rename("config_reader.log", os.path.join(self.installation_directory, "logs", "config_reader.log"))
