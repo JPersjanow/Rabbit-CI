@@ -1,5 +1,5 @@
 from flask_restplus import Resource, fields
-from flask import jsonify
+from flask import jsonify, request
 from api import api, logger
 
 from kanbans_namespace import ns
@@ -34,6 +34,12 @@ issue_model_stage = api.model(
 )
 
 config = ConfigReader()
+# PAGINATION
+# @ns.route("/issues")
+# class Issues(Resource):
+#     def get(self):
+#         limit = request.args.get("limit")
+#         print(limit)
 
 
 @ns.route("/<int:kanban_id>/issues")
@@ -120,7 +126,8 @@ class IssuesAll(Resource):
             }, 500
         except Exception as e:
             logger.error("Unable to create issue!")
-            return {"response": "Unable to create new issue!", "exception": str(e)}, 500
+            logger.exception(e)
+            return {"response": "Unable to create new issue!"}, 500
 
 
 @ns.route("/<int:kanban_id>/issues/<int:issue_id>")
@@ -311,7 +318,10 @@ class IssueSingleStage(Resource):
             or api.payload["stage"] == "string"
         ):
             return {"response": "Stage cannot be null or whitespaces only"}, 400
-
+        elif api.payload["stage"] not in [stage.value for stage in Stages]:
+            return {
+                "response": "Stage cannot be anything other than todo, done or doing"
+            }, 400
         issue_stage_hand = IssueStageHandler()
         logger.info(f"Changing issue with id {issue_id} current stage")
         try:
