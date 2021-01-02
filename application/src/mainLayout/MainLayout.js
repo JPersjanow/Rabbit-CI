@@ -119,6 +119,16 @@ class MainLayout extends React.Component {
                 addNewKanban: false,
                 addedKanbanName: "",
             });
+            fetch("http://localhost:5000/api/v1/resources/kanbans/",
+                {
+                    method: "POST",
+                    body: {
+                        "name": "string",
+                        "description": "string"
+                    }
+                })
+                .then(function (res) { return res.json(); })
+                .then(function (data) { alert(JSON.stringify(data)) })
         }
 
     }

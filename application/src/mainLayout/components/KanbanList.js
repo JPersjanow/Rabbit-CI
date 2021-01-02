@@ -31,7 +31,7 @@ const NewListElement = (props) => {
             />
             <button onClick={() => cancelButtonHandler()}
                 style={{ fontSize: '16px', fontFamily: 'fontawesome' }}>
-                <i class="fas fa-times"></i>
+                <i className="fas fa-times"></i>
             </button>
             <button onClick={() => submitNewKanbanHandler()}
                 style={{ float: 'right', fontSize: '16px', fontFamily: 'fontawesome' }}>
