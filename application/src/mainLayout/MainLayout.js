@@ -98,8 +98,7 @@ class MainLayout extends React.Component {
             const actualKanbansListLength = actualKanbansList.length;
             let addedKanbanId = actualKanbansListLength + 1;
             let addedKanban = {
-                kanban:
-                {
+                "kanban": {
                     doing: null,
                     done: null, todo: null, info: {
                         description: "",
@@ -119,24 +118,19 @@ class MainLayout extends React.Component {
                 addNewKanban: false,
                 addedKanbanName: "",
             });
-            fetch("http://localhost:5000/api/v1/resources/kanbans/",
-                {
-                    method: "POST",
-                    body: {
-                        "name": "string",
-                        "description": "string"
-                    }
-                })
-                .then(function (res) { return res.json(); })
-                .then(function (data) { alert(JSON.stringify(data)) })
+            fetch('http://localhost:5000/api/v1/resources/kanbans/', { // STILL NOW WORKING!
+                method: 'POST',
+                headers: { "Content-type": "application/json", 'Accept': 'application/json, text/plain, */*', },
+                body: JSON.stringify(addedKanban),
+                mode: 'cors'
+
+            })
+                .then(response => response.json())
+                .then(json => console.log(json))
+                .catch(err => console.log(err));
         }
 
     }
-
-    /*handleGetChoosenKanbansIssue = (id) = {
-        console.log()
-
-    }*/
 
     handleCancelButton = () => {
         this.setState({

@@ -6,7 +6,6 @@ const KanbanTables = (props) => {
     const singleKanbanName = props.singleKanbanName;
     const userKanbanListButtonBackHandler = props.userKanbanListButtonBackHandler;
     const kanbanTablesContent = props.kanbanTablesContent;
-    console.log(kanbanTablesContent);
 
 
     const toDoTable = kanbanTablesContent.filter(item => item.issue.stage === "todo");
