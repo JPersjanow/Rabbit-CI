@@ -18,4 +18,6 @@
     margin: 5%;
     background-color: #FF6DAF;
     padding: 2%;
+    display: flex;
+    justify-content: space-around;
 }

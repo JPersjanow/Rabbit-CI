@@ -56,35 +56,37 @@ function SingleTables(props) {
                 {kanbanTablesContent === null || kanbanTablesContent === [] || kanbanTablesContent === undefined ?
                     <span>nothing to show...</span>
                     :
-                    <DragDropContext onDragEnd={handleOnDragEnd}>
-                        <Droppable droppableId={kanbanTablesContent}>
-                            {(provided) => (
-                                <div {...provided.droppableProps} ref={provided.innerRef}>
-                                    {kanbanTablesContent.map((item, index) => {
-                                        return (
-                                            <Draggable key={item.issue.kanban_id} draggableId={item.issue.kanban_id} index={index}>
-                                                {(provided) => (
-                                                    <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                                        <div className="taskContainer" key={index}>
-                                                            <div>
-                                                                <span>{item.issue.name}</span>
-                                                            </div>
-                                                            <div>
-                                                                date: {item.issue.creation_date}
+                    <div style={{ display: "flex" }}>
+                        <DragDropContext onDragEnd={handleOnDragEnd}>
+                            <Droppable droppableId={kanbanTablesContent}>
+                                {(provided) => (
+                                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                                        {kanbanTablesContent.map((item, index) => {
+                                            return (
+                                                <Draggable key={item.issue.kanban_id} draggableId={item.issue.kanban_id} index={index}>
+                                                    {(provided) => (
+                                                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                                            <div className="taskContainer" key={index}>
+                                                                <div>
+                                                                    <span>{item.issue.name}</span>
+                                                                </div>
+                                                                <div>
+                                                                    date: {item.issue.creation_date}
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
 
-                                                )}
-                                            </Draggable>
+                                                    )}
+                                                </Draggable>
 
-                                        )
-                                    })}
-                                    {provided.placeholder}
-                                </div>
-                            )}
-                        </Droppable>
-                    </DragDropContext>
+                                            )
+                                        })}
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
+                    </div>
                 }
             </div>
         </div>
