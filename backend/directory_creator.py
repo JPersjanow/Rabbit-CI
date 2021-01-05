@@ -25,8 +25,13 @@ class DirectoryCreator:
 
         self.logger = setup_custom_logger("directory_creator")
 
+        # MANAGEMENT module
         self.kanban_directory = os.path.join(self.installation_directory, "kanbans")
         self.config_directory = os.path.join(self.installation_directory, "config")
+        self.log_directory = os.path.join(self.installation_directory, "logs")
+
+        # AUTOMATION module
+        self.jobs_directory = os.path.join(self.installation_directory, "jobs")
 
         if args.debug == "enable":
             self.debug = True
@@ -118,6 +123,24 @@ class DirectoryCreator:
         except Exception as e:
             self.logger.exception(e)
 
+        self.logger.info("Creating log directory")
+        try:
+            os.mkdir(self.log_directory)
+            self.logger.info(f"Config directory created in {self.log_directory}")
+        except FileExistsError:
+            self.logger.warning(f"{self.log_directory} already exists!")
+        except Exception as e:
+            self.logger.exception(e)
+
+        self.logger.info("Creating jobs directory")
+        try:
+            os.mkdir(self.jobs_directory)
+            self.logger.info(f"Jobs directory created in {self.jobs_directory}")
+        except FileExistsError:
+            self.logger.warning(f"{self.jobs_directory} already exists!")
+        except Exception as e:
+            self.logger.exception(e)
+
     def set_config_env_variable(self):
         if self.platform == "Linux":
             self.logger.info("Linux platform detected")
@@ -132,13 +155,21 @@ class DirectoryCreator:
             installation_directory=self.installation_directory,
             config_directory=self.config_directory,
             kanbans_directory=self.kanban_directory,
+            log_directory=self.log_directory,
         )
         cfg_creator.create_config_file()
+
+    def move_log(self):
+        os.rename(
+            "directory_creator.log",
+            os.path.join(self.installation_directory, "logs", "directory_creator.log"),
+        )
 
     def run(self):
         if not self.validate_directory:
             self.create_directory_tree()
             self.create_config_file()
+            self.move_log()
 
         if self.debug:
             self.create_fake_kanbans(num_kanbans=10)
