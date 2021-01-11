@@ -38,6 +38,7 @@ class MainLayout extends React.Component {
             .catch(error => console.log(error))
     }
 
+
     handleKanbanListButton = (kanbanId) => {
         // console.log(kanbanId);
         const userTables = this.state.userKanbans;
@@ -82,36 +83,45 @@ class MainLayout extends React.Component {
 
     handleChange = (e) => {
         let inputValue = e.target.value;
-        console.log(inputValue);
         this.setState({
             addedKanbanName: inputValue,
         });
     }
 
-    handleSubmitNewKanban = () => {
+    handleRefreshKanbans = () => {
+        const query = "http://localhost:5000/api/v1/resources/kanbans/"; // http instead of https
+        fetch(query).then(response => {
+            if (response.ok) {
+                console.log(response);
+                return response // need this to clear data and take array
+            }
+            throw Error(response.status)
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data);
+                this.setState({
+                    userKanbans: data
+                })
+            })
+            .catch(error => console.log(error))
+    }
 
+    handleSubmitNewKanban = () => {
         const addedKanbanName = this.state.addedKanbanName
         if (addedKanbanName === "") {
             return alert("need to write new kanban name!");
         } else {
-            const actualKanbansList = this.state.userKanbans;
-            const actualKanbansListLength = actualKanbansList.length;
-            let addedKanbanId = actualKanbansListLength + 1;
             let addedKanban = {
                 "name": addedKanbanName,
                 "description": "abc",
             }
-            const userKanbansActual = this.state.userKanbans;
-            console.log(userKanbansActual)
-            const userKanbansupdate = this.state.userKanbans.concat(addedKanban);
-            console.log(userKanbansupdate);
+
             this.setState({
-                userKanbans: userKanbansupdate,
                 sumbmitState: 1,
                 addNewKanban: false,
                 addedKanbanName: "",
             });
-            
+
             fetch('http://localhost:5000/api/v1/resources/kanbans/', {
                 method: 'POST',
                 headers: { "Content-Type": "application/json", 'Accept': 'application/json', },
@@ -121,7 +131,7 @@ class MainLayout extends React.Component {
             })
                 .catch(err => console.log(err));
         };
-
+        this.handleRefreshKanbans();
     }
 
 
@@ -141,9 +151,7 @@ class MainLayout extends React.Component {
         const automationPage = this.state.automationPage;
         const singleJobPage = this.state.singleJobPage;
         const userKanbanListButtonHandler = this.handleKanbanListButton;
-
         const userKanbanListButtonBackHandler = this.handleKanbanListButtonBack;
-
         const kanbanTablesContent = this.state.kanbanTablesContent;
         const singleKanbanName = this.state.singleKanbanName;
         const addNewKanbanButtonHandler = this.hanldeAddNewKanban;

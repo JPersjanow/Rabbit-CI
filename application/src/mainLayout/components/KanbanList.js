@@ -54,7 +54,6 @@ const KanbanList = (props) => {
     const inputChangeHandler = props.inputChangeHandler;
     const submitNewKanbanHandler = props.submitNewKanbanHandler;
     const cancelButtonHandler = props.cancelButtonHandler;
-    console.log(addNewKanbanVariable);
     return (
         <div>
             <ListElement
