@@ -4,12 +4,10 @@
     display: grid;
     background-color: #E2E2E2;
     min-height: 846px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
 }
 
-/*
-.kanbanButtonsContianer{
-   
-}*/
+
 
 .automationAndConfiguration {
  display: grid;
@@ -19,8 +17,6 @@
     position: absolute;
     bottom: 3%;
     display: grid;
-    padding: 1%;
-    
 }
 
 .automationBtn{
@@ -31,14 +27,48 @@
    
 }
 
-.btnColor{
-    background-color: transparent; 
-    color: black;
-    border: 2px solid white;
-  border-radius:4px;
-  font-size: 16px;
-  font-weight: 500;
-  margin:1% 0;
-  padding: 5%;
-  text-transform: uppercase;
+.mainButtonStyle, .addKanbanButton{
+    border-radius: 4px;
+   background: linear-gradient(to right, #FF8AB3, #FFDC6A) !important;
+   border: none;
+   color: #FFFFFF;
+   text-align: center;
+   text-transform: uppercase;
+   font-size: 16px;
+   padding: 18px;
+   width: 25vh;
+   transition: all 0.4s;
+   cursor: pointer;
+   margin: 5px;
 }
+
+.mainButtonStyle span, .addKanbanButton span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.4s;
+  }
+  .mainButtonStyle span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+  }
+  .addKanbanButton span:after{
+    content: '\002B';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+  }
+
+  .mainButtonStyle:hover span,  .addKanbanButton:hover span {
+    padding-right: 25px;
+  }
+  .mainButtonStyle:hover span:after, .addKanbanButton:hover span:after {
+    opacity: 1;
+    right: 0;
+  }

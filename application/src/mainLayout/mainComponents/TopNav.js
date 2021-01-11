@@ -9,7 +9,7 @@ const TopNav = (props) => {
             <div className="logoContainer">
                 <img src={logo} alt="Logo" className="logoStyle" />
             </div>
-            <div className="userNameAndOptions">
+            <div className="userNameAndOptions" >
                 <span>{userName}</span>
                 <button className="optionsButton">options</button>
             </div>

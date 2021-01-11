@@ -20,7 +20,7 @@ const NewListElement = (props) => {
     const cancelButtonHandler = props.cancelButtonHandler;
     let nameValue;
     return (
-        <div className="kanbansRow">
+        <div className="newRow">
             <input
                 type="text"
                 id="kanbanNameId"
@@ -34,7 +34,7 @@ const NewListElement = (props) => {
                 <i className="fas fa-times"></i>
             </button>
             <button onClick={() => submitNewKanbanHandler()}
-                style={{ float: 'right', fontSize: '16px', fontFamily: 'fontawesome' }}>
+                style={{ fontSize: '16px', fontFamily: 'fontawesome' }}>
                 <i className="fas fa-check"></i>
             </button>
 
@@ -65,7 +65,10 @@ const KanbanList = (props) => {
                     handleSubmit={handleSubmit}
                     handleValueChange={inputChangeHandler}
                     cancelButtonHandler={cancelButtonHandler} /> : null}
-            <button onClick={() => addNewKanbanButtonHandler()}>Add new kanban</button>
+            <button
+                className="AddButtonStyle"
+                onClick={() => addNewKanbanButtonHandler()} >
+                <span>Add new kanban</span></button>
         </div>
     )
 }

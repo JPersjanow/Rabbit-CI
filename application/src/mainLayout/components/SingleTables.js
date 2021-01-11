@@ -56,8 +56,8 @@ function SingleTables(props) {
                 {kanbanTablesContent === null || kanbanTablesContent === [] || kanbanTablesContent === undefined ?
                     <span>nothing to show...</span>
                     :
-                    <div style={{ display: "flex" }}>
-                        <DragDropContext onDragEnd={handleOnDragEnd}>
+                    <div >
+                        <DragDropContext onDragEnd={handleOnDragEnd} style={{ width: '100%' }}>
                             <Droppable droppableId={kanbanTablesContent}>
                                 {(provided) => (
                                     <div {...provided.droppableProps} ref={provided.innerRef}>

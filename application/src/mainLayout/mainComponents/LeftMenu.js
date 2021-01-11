@@ -12,20 +12,24 @@ const LeftMenu = (props) => {
                 <div className="kanbanButtonsContianer">
                     <button
                         onClick={() => userKanbanListButtonBackHandler()}
-                        className="btnColor">Kanban list</button>
-                    <button className="btnColor">Add issue</button>
+                        className="mainButtonStyle">
+                        <span>Kanban list</span>
+                    </button>
+                    <button className="mainButtonStyle"><span>Add issue </span></button>
                 </div>
                 : <div className="kanbanButtonsContianer">
                     <button
                         onClick={() => addNewKanbanButtonHandler()}
-                        className="btnColor">
-                        Add Kanban</button>
+                        className="addKanbanButton"> <span>
+                            Add Kanban </span></button>
                 </div>}
 
             <div className="automationAndConfiguration">
                 <div className="buttonsMenuContainer">
-                    <button className="automationBtn btnColor">Automation Module</button>
-                    <button className="configurationBtn btnColor"> Configuration</button>
+                    <button className="automationBtn mainButtonStyle">
+                        <span>Automation Module </span></button>
+                    <button className="configurationBtn mainButtonStyle">
+                        <span> Configuration </span></button>
                 </div>
 
             </div>
