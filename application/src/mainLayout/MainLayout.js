@@ -89,7 +89,7 @@ class MainLayout extends React.Component {
     }
 
     handleSubmitNewKanban = () => {
-        console.log("handleSubmitNewKanban");
+
         const addedKanbanName = this.state.addedKanbanName
         if (addedKanbanName === "") {
             return alert("need to write new kanban name!");
@@ -98,16 +98,9 @@ class MainLayout extends React.Component {
             const actualKanbansListLength = actualKanbansList.length;
             let addedKanbanId = actualKanbansListLength + 1;
             let addedKanban = {
-                "kanban": {
-                    doing: null,
-                    done: null, todo: null, info: {
-                        description: "",
-                        id: addedKanbanId,
-                        name: addedKanbanName,
-                    }
-                }
-            };
-            console.log(addedKanban);
+                name: addedKanbanName,
+                description: "abc",
+            }
             const userKanbansActual = this.state.userKanbans;
             console.log(userKanbansActual)
             const userKanbansupdate = this.state.userKanbans.concat(addedKanban);
@@ -118,19 +111,21 @@ class MainLayout extends React.Component {
                 addNewKanban: false,
                 addedKanbanName: "",
             });
-            fetch('http://localhost:5000/api/v1/resources/kanbans/', { // STILL NOW WORKING!
+            fetch('http://localhost:5000/api/v1/resources/kanbans/', {
                 method: 'POST',
                 headers: { "Content-type": "application/json", 'Accept': 'application/json, text/plain, */*', },
                 body: JSON.stringify(addedKanban),
-                mode: 'cors'
+                mode: 'no-cors'
 
             })
                 .then(response => response.json())
                 .then(json => console.log(json))
                 .catch(err => console.log(err));
-        }
+        };
 
     }
+
+
 
     handleCancelButton = () => {
         this.setState({

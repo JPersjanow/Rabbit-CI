@@ -90,8 +90,12 @@ class KanbansAll(Resource):
                 "response": "Failed while creating config.xml file, deleting kanban.",
                 "exception": str(e),
             }, 500
-
-        return {"response": f"New kanban board with id {new_kanban_id} created"}, 201
+        response = {
+            "response": f"New kanban board with id {new_kanban_id} created"}
+        response = jsonify(response)
+        response.headers.add('Acces-Control-Allow-Origin', "*")
+        return response, 201
+        # return {"response": f"New kanban board with id {new_kanban_id} created"}, 201
 
 
 @ns.route("/<int:kanban_id>")
