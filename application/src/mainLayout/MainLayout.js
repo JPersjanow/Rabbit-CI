@@ -20,7 +20,8 @@ class MainLayout extends React.Component {
         sumbmitState: 1,
     }
 
-    componentDidMount() {
+
+    handleRefreshKanbans = () => {
         const query = "http://localhost:5000/api/v1/resources/kanbans/"; // http instead of https
         fetch(query).then(response => {
             if (response.ok) {
@@ -36,6 +37,10 @@ class MainLayout extends React.Component {
                 })
             })
             .catch(error => console.log(error))
+    }
+
+    componentDidMount() {
+        this.handleRefreshKanbans();
     }
 
 
@@ -88,23 +93,6 @@ class MainLayout extends React.Component {
         });
     }
 
-    handleRefreshKanbans = () => {
-        const query = "http://localhost:5000/api/v1/resources/kanbans/"; // http instead of https
-        fetch(query).then(response => {
-            if (response.ok) {
-                console.log(response);
-                return response // need this to clear data and take array
-            }
-            throw Error(response.status)
-        }).then(response => response.json())
-            .then(data => {
-                console.log(data);
-                this.setState({
-                    userKanbans: data
-                })
-            })
-            .catch(error => console.log(error))
-    }
 
     handleSubmitNewKanban = () => {
         const addedKanbanName = this.state.addedKanbanName
@@ -133,8 +121,6 @@ class MainLayout extends React.Component {
         };
         this.handleRefreshKanbans();
     }
-
-
 
     handleCancelButton = () => {
         this.setState({
