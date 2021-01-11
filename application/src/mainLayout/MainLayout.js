@@ -98,8 +98,8 @@ class MainLayout extends React.Component {
             const actualKanbansListLength = actualKanbansList.length;
             let addedKanbanId = actualKanbansListLength + 1;
             let addedKanban = {
-                name: addedKanbanName,
-                description: "abc",
+                "name": addedKanbanName,
+                "description": "abc",
             }
             const userKanbansActual = this.state.userKanbans;
             console.log(userKanbansActual)
@@ -111,15 +111,14 @@ class MainLayout extends React.Component {
                 addNewKanban: false,
                 addedKanbanName: "",
             });
+            
             fetch('http://localhost:5000/api/v1/resources/kanbans/', {
                 method: 'POST',
-                headers: { "Content-type": "application/json", 'Accept': 'application/json, text/plain, */*', },
+                headers: { "Content-Type": "application/json", 'Accept': 'application/json', },
                 body: JSON.stringify(addedKanban),
                 mode: 'no-cors'
 
             })
-                .then(response => response.json())
-                .then(json => console.log(json))
                 .catch(err => console.log(err));
         };
 

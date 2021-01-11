@@ -1,6 +1,6 @@
 import os
 from flask_restplus import Resource, fields
-from flask import jsonify
+from flask import jsonify, request
 
 from tools.xml_tools import update_xml_attribute
 from tools.config_reader import ConfigReader
@@ -56,6 +56,9 @@ class KanbansAll(Resource):
         """Create new kanban"""
         kanban_creator = KanbanCreator()
         logger.info("Creating new kanban")
+        request.get_json(force=True)
+        if api.payload is None:
+            return {"response": "Unable to decode payload"}, 400
         if api.payload["name"].replace(" ", "") == "":
             return {"response": "Name cannot be null or whitespaces only"}, 400
         try:
@@ -90,12 +93,8 @@ class KanbansAll(Resource):
                 "response": "Failed while creating config.xml file, deleting kanban.",
                 "exception": str(e),
             }, 500
-        response = {
-            "response": f"New kanban board with id {new_kanban_id} created"}
-        response = jsonify(response)
-        response.headers.add('Acces-Control-Allow-Origin', "*")
-        return response, 201
-        # return {"response": f"New kanban board with id {new_kanban_id} created"}, 201
+        
+        return {"response": f"New kanban board with id {new_kanban_id} created"}, 201
 
 
 @ns.route("/<int:kanban_id>")
