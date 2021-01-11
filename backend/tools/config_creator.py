@@ -14,10 +14,12 @@ class ConfigCreator:
         installation_directory: str,
         config_directory: str,
         kanbans_directory: str,
+        jobs_directory: str,
         log_directory: str,
     ):
         self.installation_directory = installation_directory
         self.config_directory = config_directory
+        self.jobs_directory = jobs_directory
         self.log_directory = log_directory
         self.kanbans_directory = kanbans_directory
         self.logger = setup_custom_logger("config_creator")
@@ -38,6 +40,7 @@ class ConfigCreator:
                 root, "installation_directory"
             ).text = self.installation_directory
             ET.SubElement(root, "kanbans_directory").text = self.kanbans_directory
+            ET.SubElement(root, "jobs_directory").text = self.jobs_directory
             ET.SubElement(root, "log_directory").text = self.log_directory
             tree = prettify(root)
             with open(os.path.join(self.config_directory, "config.xml"), "w+") as file:
