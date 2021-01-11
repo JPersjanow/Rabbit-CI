@@ -81,6 +81,7 @@ class IssuesAll(Resource):
     @api.response(400, "Bad request")
     @api.response(500, "Unable to create issue")
     def post(self, kanban_id):
+        request.get_json(force=True)
         if (
             api.payload["name"].replace(" ", "") == ""
             or api.payload["creator"].replace(" ", "") == ""

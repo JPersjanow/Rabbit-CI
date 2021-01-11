@@ -3,6 +3,8 @@
     display: flex;
     padding: 1%;
     background-color: #E2E2E2;
+    height: 4vh;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
 }
 
 .userNameAndOptions{
@@ -16,6 +18,46 @@
     font-weight: 500;
 }
 .optionsButton{
-    margin:0 1%;
-    font-size: 21px;
+    border-radius: 4px;
+    background: linear-gradient(to right, #FF8AB3, #FFDC6A) !important;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 14px;
+    padding: 10px;
+    width: 15vh;
+    transition: all 0.4s;
+    cursor: pointer;
+    margin: 0px 5px;
+}
+
+.optionsButton span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.4s;
+  }
+  .optionsButton span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+  }
+  .optionsButton:hover span {
+    padding-right: 25px;
+  }
+  .optionsButton:hover span:after {
+    opacity: 1;
+    right: 0;
+  }
+
+.logoStyle{
+    height: 8vh;
+    width: 8vh;
+    top: 0;
+    left: 1%;
+    position: absolute;
 }

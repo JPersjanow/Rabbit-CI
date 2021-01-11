@@ -1,6 +1,6 @@
 import os
 from flask_restplus import Resource, fields
-from flask import jsonify
+from flask import jsonify, request
 
 from tools.xml_tools import update_xml_attribute
 from tools.config_reader import ConfigReader
@@ -56,6 +56,9 @@ class KanbansAll(Resource):
         """Create new kanban"""
         kanban_creator = KanbanCreator()
         logger.info("Creating new kanban")
+        request.get_json(force=True)
+        if api.payload is None:
+            return {"response": "Unable to decode payload"}, 400
         if api.payload["name"].replace(" ", "") == "":
             return {"response": "Name cannot be null or whitespaces only"}, 400
         try:
@@ -90,7 +93,7 @@ class KanbansAll(Resource):
                 "response": "Failed while creating config.xml file, deleting kanban.",
                 "exception": str(e),
             }, 500
-
+        
         return {"response": f"New kanban board with id {new_kanban_id} created"}, 201
 
 
@@ -138,7 +141,8 @@ class KanbanSingle(Resource):
                 if api.payload["name"].replace(" ", "") == "":
                     return {"response": "Name cannot be null or whitespaces only"}, 400
                 elif api.payload["name"] != "string":
-                    update_xml_attribute(config_file_dir, "name", api.payload["name"])
+                    update_xml_attribute(
+                        config_file_dir, "name", api.payload["name"])
                     response["response_name"] = f"Updated with {api.payload['name']}"
                 if api.payload["description"] != "string":
                     update_xml_attribute(

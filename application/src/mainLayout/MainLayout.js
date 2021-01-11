@@ -8,62 +8,126 @@ class MainLayout extends React.Component {
 
     state = {
         userName: "user1",
-        userKanbans: [
-            {
-                kanbanName: "Kanban1",
-                tables: [
-                    { toDo: "toDo1", }, { doing: " ", }, { done: "done1" }]
-            },
-            {
-                kanbanName: "Kanban2", tables: [
-                    { toDo: "" }, { doing: "doing2" }, { done: "done2" }]
-            }, {
-                kanbanName: "Kanban3", tables: [
-                    { toDo: "toDo3" }, { doing: "doing3" }, { done: "done3" }]
-            }, // each kanban has a few jobs
-        ],                   // page from canva project
+        userKanbans: [],               // page from canva project
         userKanbansPage: true,        //page 1
         userKanbansTablePage: false, //page 2, 3
         automationPage: false,       //page 4
         singleJobPage: false,        // page 5
         kanbanTablesContent: [],
         singleKanbanName: "",
+        addNewKanban: false,
+        addedKanbanName: "",
+        sumbmitState: 1,
     }
 
-    componentDidMount() {
-        const query ="http://localhost:5000/api/v1/resources/kanbans/all"; // http instead of https
-        fetch(query).then(response=>{
-            if(response.ok){
+
+    handleRefreshKanbans = () => {
+        const query = "http://localhost:5000/api/v1/resources/kanbans/"; // http instead of https
+        fetch(query).then(response => {
+            if (response.ok) {
                 console.log(response);
+                return response // need this to clear data and take array
             }
             throw Error(response.status)
         }).then(response => response.json())
-            .then(data => console.log(data))
-            .catch(error=>console.log(error))
+            .then(data => {
+                console.log(data);
+                this.setState({
+                    userKanbans: data
+                })
+            })
+            .catch(error => console.log(error))
     }
 
-    handleKanbanListButton = (kanbanName) => {
+    componentDidMount() {
+        this.handleRefreshKanbans();
+    }
+
+
+    handleKanbanListButton = (kanbanId) => {
+        // console.log(kanbanId);
         const userTables = this.state.userKanbans;
-        const chooseKanban = userTables.filter(tableName => tableName.kanbanName === kanbanName); //
-        console.log(chooseKanban);
-        const toDoTable = chooseKanban[0].tables[0];
-        const doingTable = chooseKanban[0].tables[1];
-        const doneTable = chooseKanban[0].tables[2];
-        const kanbanTable = [toDoTable, doingTable, doneTable];
-        this.setState({
-            kanbanTablesContent: kanbanTable,
-            userKanbansPage: false,
-            userKanbansTablePage: true,
-            singleKanbanName: kanbanName,
-        })
+        const chooseKanban = userTables.filter(item => item.kanban.info.id === kanbanId); //
+        const thiskanbanName = chooseKanban[0].kanban.info.name;
+        // console.log(chooseKanban);
+        const queryChoosenKanbanIssue = `http://localhost:5000/api/v1/resources/kanbans/${kanbanId}/issues`
+        fetch(queryChoosenKanbanIssue).then(response => {
+            if (response.ok) {
+                return response
+            }
+            throw Error(response.status)
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data);
+                this.setState({
+                    kanbanTablesContent: data,
+                    userKanbansPage: false,
+                    userKanbansTablePage: true,
+                    singleKanbanName: thiskanbanName,
+                })
+            })
+            .catch(error => console.log(error))
     }
 
     handleKanbanListButtonBack = () => {
         this.setState({
+            kanbanTablesContent: [],
             userKanbansPage: true,
             userKanbansTablePage: false,
             singleKanbanName: "",
         })
+    }
+
+    hanldeAddNewKanban = () => {
+        console.log("add new kanban");
+        this.setState({
+            addNewKanban: true,
+            sumbmitState: 2,
+        })
+    }
+
+    handleChange = (e) => {
+        let inputValue = e.target.value;
+        this.setState({
+            addedKanbanName: inputValue,
+        });
+    }
+
+
+    handleSubmitNewKanban = () => {
+        const addedKanbanName = this.state.addedKanbanName
+        if (addedKanbanName === "") {
+            return alert("need to write new kanban name!");
+        } else {
+            let addedKanban = {
+                "name": addedKanbanName,
+                "description": "abc",
+            }
+
+            this.setState({
+                sumbmitState: 1,
+                addNewKanban: false,
+                addedKanbanName: "",
+            });
+
+            fetch('http://localhost:5000/api/v1/resources/kanbans/', {
+                method: 'POST',
+                headers: { "Content-Type": "application/json", 'Accept': 'application/json', },
+                body: JSON.stringify(addedKanban),
+                mode: 'no-cors'
+
+            })
+                .catch(err => console.log(err));
+        };
+        this.handleRefreshKanbans();
+    }
+
+    handleCancelButton = () => {
+        this.setState({
+            sumbmitState: 1,
+            addNewKanban: false,
+            addedKanbanName: "",
+        });
     }
 
     render() {
@@ -76,6 +140,12 @@ class MainLayout extends React.Component {
         const userKanbanListButtonBackHandler = this.handleKanbanListButtonBack;
         const kanbanTablesContent = this.state.kanbanTablesContent;
         const singleKanbanName = this.state.singleKanbanName;
+        const addNewKanbanButtonHandler = this.hanldeAddNewKanban;
+        const addNewKanbanVariable = this.state.addNewKanban;
+        const sumbmitState = this.state.sumbmitState;
+        const inputChangeHandler = this.handleChange;
+        const submitNewKanbanHandler = this.handleSubmitNewKanban;
+        const cancelButtonHandler = this.handleCancelButton;
         return (
             <div className="mainLayout">
                 <TopNav
@@ -83,7 +153,9 @@ class MainLayout extends React.Component {
                 />
                 <div className="contentLayout">
                     <LeftMenu
-                        userKanbansTablePage={userKanbansTablePage} />
+                        userKanbansTablePage={userKanbansTablePage}
+                        addNewKanbanButtonHandler={addNewKanbanButtonHandler}
+                        userKanbanListButtonBackHandler={userKanbanListButtonBackHandler} />
                     <MainContent
                         userKanbans={userKanbans}
                         isUserKanbansPage={userKanbansPage}
@@ -92,8 +164,14 @@ class MainLayout extends React.Component {
                         isSingleJobPage={singleJobPage}
                         userKanbanListButton={userKanbanListButtonHandler}
                         userKanbanListButtonBackHandler={userKanbanListButtonBackHandler}
+                        addNewKanbanButtonHandler={addNewKanbanButtonHandler}
                         kanbanTablesContent={kanbanTablesContent}
                         singleKanbanName={singleKanbanName}
+                        addNewKanbanVariable={addNewKanbanVariable}
+                        sumbmitState={sumbmitState}
+                        inputChangeHandler={inputChangeHandler}
+                        submitNewKanbanHandler={submitNewKanbanHandler}
+                        cancelButtonHandler={cancelButtonHandler}
                     />
                 </div>
             </div>

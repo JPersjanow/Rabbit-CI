@@ -1,6 +1,7 @@
 .singleTableStyle{
     width: 25%;
     margin: 1%;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 .tableTitle{
@@ -13,3 +14,12 @@
     background-color: #F8F3F3;
     padding: 1%;
 }
+
+.taskContainer{
+    margin: 5%;
+    background-color: #FF6DAF;
+    padding: 2%;
+    display: flex;
+    justify-content: space-around;
+}
+

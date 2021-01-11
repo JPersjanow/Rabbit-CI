@@ -1,11 +1,80 @@
 .kanbansRow{
+    transition: all 0.5s;
     margin: 1% 0;
     padding: 1%;
     text-align: left;
     background-color: #E2E2E2;
     border-left: 20px solid #FF6DAF;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.kanbansRow:hover{
+    transition: all 0.5s;
+    border-left: 40px solid #FFC174;
+}
+
+.newRow{
+    transition: all 0.5s;
+    margin: 1% 0;
+    padding: 1%;
+    text-align: left;
+    background-color: #E2E2E2;
+    border-left: 40px solid #FFC174;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+.newRow input{
+    transition: all 0.5s;
+    background-color: transparent;
+    border:2px solid transparent;
+}
+
+.newRow input:hover{
+    transition: all 0.5s;
+    border-bottom: 2px solid black;
+}
+
+.newRow input:focus{
+    outline-width: 0;
+    border-bottom:2px solid black;
 }
 
 .kanbansRow span{
     margin-left: 5%;
 }
+
+.AddButtonStyle{
+    border-radius: 4px;
+    background: linear-gradient(to right, #FF8AB3, #FFDC6A) !important;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 14px;
+    padding: 10px;
+    width: 25vh;
+    transition: all 0.4s;
+    cursor: pointer;
+    margin: 0px 5px;
+}
+
+.AddButtonStyle span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.4s;
+  }
+  .AddButtonStyle span:after {
+    content: '\002B';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+  }
+  .AddButtonStyle:hover span {
+    padding-right: 25px;
+  }
+  .AddButtonStyle:hover span:after {
+    opacity: 1;
+    right: 0;
+  }

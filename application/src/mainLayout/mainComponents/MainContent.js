@@ -7,6 +7,12 @@ import KanbanTables from '../components/KanbanTables'
 const AssignedKanbanTable = (props) => {
     const userKanbans = props.userKanbans;
     const userKanbanListButton = props.userKanbanListButton
+    const addNewKanbanButtonHandler = props.addNewKanbanButtonHandler
+    const addNewKanbanVariable = props.addNewKanbanVariable;
+    const sumbmitState = props.sumbmitState;
+    const inputChangeHandler = props.inputChangeHandler;
+    const submitNewKanbanHandler = props.submitNewKanbanHandler;
+    const cancelButtonHandler = props.cancelButtonHandler;
     return (
         <div>
             <div className="contentTitle">
@@ -19,7 +25,13 @@ const AssignedKanbanTable = (props) => {
                 <div>
                     <KanbanList
                         userKanbans={userKanbans}
-                        userKanbanListButton={userKanbanListButton} />
+                        userKanbanListButton={userKanbanListButton}
+                        addNewKanbanButtonHandler={addNewKanbanButtonHandler}
+                        addNewKanbanVariable={addNewKanbanVariable}
+                        inputChangeHandler={inputChangeHandler}
+                        sumbmitState={sumbmitState}
+                        submitNewKanbanHandler={submitNewKanbanHandler}
+                        cancelButtonHandler={cancelButtonHandler} />
                 </div>
             </div>
         </div>
@@ -28,30 +40,40 @@ const AssignedKanbanTable = (props) => {
 
 
 const MainContent = (props) => {
-
+    const addNewKanbanVariable = props.addNewKanbanVariable;
+    const addNewKanbanButtonHandler = props.addNewKanbanButtonHandler;
     const userKanbans = props.userKanbans;
     const singleKanbanName = props.singleKanbanName;
-    const userKanbanListButton = props.userKanbanListButton
+    const userKanbanListButton = props.userKanbanListButton;
     const kanbanTablesContent = props.kanbanTablesContent;
-    //const userKanbansPage = props.isUserKanbansPage;
-    const userKanbansTablePage = props.isuserKanbansTablePage;
     const userKanbanListButtonBackHandler = props.userKanbanListButtonBackHandler;
+    const sumbmitState = props.sumbmitState;
+    const isUserKanbansPage = props.isUserKanbansPage;
+    const isuserKanbansTablePage = props.isuserKanbansTablePage;
+    const inputChangeHandler = props.inputChangeHandler;
+    const submitNewKanbanHandler = props.submitNewKanbanHandler;
+    const cancelButtonHandler = props.cancelButtonHandler;
     return (
         <div className="mainContentStyle">
-            { kanbanTablesContent !== [] && userKanbansTablePage ?
+            { isuserKanbansTablePage && !isUserKanbansPage ?
                 <KanbanTables
                     singleKanbanName={singleKanbanName}
                     userKanbanListButtonBackHandler={userKanbanListButtonBackHandler}
                     kanbanTablesContent={kanbanTablesContent} />
                 : <AssignedKanbanTable
                     userKanbans={userKanbans}
-                    userKanbanListButton={userKanbanListButton} />
-
+                    userKanbanListButton={userKanbanListButton}
+                    addNewKanbanButtonHandler={addNewKanbanButtonHandler}
+                    addNewKanbanVariable={addNewKanbanVariable}
+                    sumbmitState={sumbmitState}
+                    inputChangeHandler={inputChangeHandler}
+                    submitNewKanbanHandler={submitNewKanbanHandler}
+                    cancelButtonHandler={cancelButtonHandler}
+                />
             }
-
-
         </div>
     )
+
 }
 
 

@@ -1,10 +1,12 @@
 from flask import Flask, Blueprint
+from flask_cors import CORS
 from tools.log import setup_custom_logger
 from api import api, logger
 from kanbans_namespace import ns as kanban_namespace
 from issues_namespace import ns as issues_namespace
 
 app = Flask(__name__)
+CORS(app=app)
 
 
 def initialize_app(flask_app):
