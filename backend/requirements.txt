@@ -3,3 +3,4 @@ flask_api
 flask_restplus
 Werkzeug==0.16.1
 xmltodict
+flask_cors
