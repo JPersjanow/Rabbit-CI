@@ -1,9 +1,8 @@
+import unittest
 import requests
 import json
-import sys
-import unittest
-from flask import Flask
-from rabbit_api_server import app
+
+
 
 url = "http://127.0.0.1:5000" # The root url of the flask app
 url_kanaban = "http://127.0.0.1:5000/api/v1/resources/kanbans/"
@@ -19,31 +18,31 @@ class AConnectionTest(unittest.TestCase):
 
 class BPOSTKanbans(unittest.TestCase):
     def test_post_kanban_ok(self):
-        r = requests.post(url_kanaban,data=json.dumps({"name": "test", "description": "test2"})) 
+        r = requests.post(url_kanaban, data=json.dumps({"name": "test", "description": "test2"}))
         self.assertEqual(r.status_code, 201)
         self.assertTrue("New kanban board with id" in r.text)
     def test_post_kanban_spaces(self):
-        r = requests.post(url_kanaban,data=json.dumps({"name": "test ", "description": " test"})) 
+        r = requests.post(url_kanaban, data=json.dumps({"name": "test ", "description": " test"}))
         self.assertEqual(r.status_code, 201)
         self.assertTrue("New kanban board with id" in r.text)
     def test_post_kanban_empty_desc(self):
-        r = requests.post(url_kanaban,data=json.dumps({"name": "test", "description": ""})) 
+        r = requests.post(url_kanaban, data=json.dumps({"name": "test", "description": ""}))
         self.assertEqual(r.status_code, 201)
         self.assertTrue("New kanban board with id" in r.text)
     def test_post_kanban_special_characters(self):
-        r = requests.post(url_kanaban,data=json.dumps({"name": "!@#$%^&*()_+,", "description": "!@#$%^&*()_+,"})) 
+        r = requests.post(url_kanaban, data=json.dumps({"name": "!@#$%^", "description": "&*()_+,"}))
         self.assertEqual(r.status_code, 201)
         self.assertTrue("New kanban board with id" in r.text)
     def test_post_kanban_numbers_only(self):
-        r = requests.post(url_kanaban,data=json.dumps({"name": "1234567890", "description": "1234567890"})) 
+        r = requests.post(url_kanaban, data=json.dumps({"name": "1234567890", "description": "1234567890"}))
         self.assertEqual(r.status_code, 201)
         self.assertTrue("New kanban board with id" in r.text)
     def test_post_kanban_whitespaces(self):
-        r = requests.post(url_kanaban,data=json.dumps({"name": "", "description": "   "})) 
+        r = requests.post(url_kanaban, data=json.dumps({"name": "", "description": "   "}))
         self.assertEqual(r.status_code, 400)
         self.assertTrue("Name cannot be null or whitespaces only" in r.text)
     def test_post_kanban_whitespaces_2(self):
-        r = requests.post(url_kanaban,data=json.dumps({"name": "", "description": "test"})) 
+        r = requests.post(url_kanaban, data=json.dumps({"name": "", "description": "test"}))
         self.assertEqual(r.status_code, 400)
         self.assertTrue("Name cannot be null or whitespaces only" in r.text)
 
@@ -73,8 +72,6 @@ class EGETKanbans(unittest.TestCase):
         r = requests.get(url_kanaban + "100") 
         self.assertEqual(r.status_code, 400)
         self.assertTrue("Kanban id not found" in r.text)
-
-
 
 
 if __name__ == "__main__":
