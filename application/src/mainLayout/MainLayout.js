@@ -42,7 +42,9 @@ class MainLayout extends React.Component {
     componentDidMount() {
         this.handleRefreshKanbans();
     }
+    componentDidUpdate() {
 
+    }
 
     handleKanbanListButton = (kanbanId) => {
         // console.log(kanbanId);
@@ -93,7 +95,6 @@ class MainLayout extends React.Component {
         });
     }
 
-
     handleSubmitNewKanban = () => {
         const addedKanbanName = this.state.addedKanbanName
         if (addedKanbanName === "") {
@@ -103,7 +104,6 @@ class MainLayout extends React.Component {
                 "name": addedKanbanName,
                 "description": "abc",
             }
-
             this.setState({
                 sumbmitState: 1,
                 addNewKanban: false,
