@@ -67,17 +67,6 @@ const KanbanTables = (props) => {
 
     const [columns, setColumns] = useState(taskColumns);
 
-    function handleUpdateIssue(issue_id, name) {
-
-    }
-    function handleClickIssue(id, name) {
-
-    }
-
-    function handleDivClick(name) {
-
-    }
-
     function updateStage(kanban_id, issue_id, stageName) {
         let changedStage = {
             "stage": stageName
@@ -102,8 +91,8 @@ const KanbanTables = (props) => {
             }
         }
     }
+
     useEffect(() => {
-        console.log(columns);
         let toDoTableAfter;
         let doingTableAfter;
         let doneTableAfter;
@@ -127,21 +116,13 @@ const KanbanTables = (props) => {
 
     return (
         <div className="kanbanTablesStyle">
-            <div className="backButtonContainer">
-                <button onClick={() => userKanbanListButtonBackHandler()}
-                    style={{ float: 'left' }}>
-                    <i className="fa fa-arrow-left"></i>
-                </button>
-            </div>
             <div className="contentTitle">
                 <span>{singleKanbanName}</span>
             </div>
             <div className="kanbanTablesContainer">
                 <div style={{ display: "flex", justifyContent: "center", height: "100%" }}>
                     <DragDropContext
-                        onDragEnd={result => onDragEnd(result, columns, setColumns)}
-
-                    >
+                        onDragEnd={result => onDragEnd(result, columns, setColumns)}>
                         {Object.entries(columns).map(([columnId, column], index) => {
                             return (
                                 <div
@@ -174,17 +155,11 @@ const KanbanTables = (props) => {
                                                                 <Draggable
                                                                     key={item.issue.issue_id}
                                                                     draggableId={item.issue.issue_id}
-                                                                    index={index}
-                                                                    onClick={handleClickIssue(item.issue.issue_id, index)}
-                                                                // onDragEnd={handleUpdateIssue(item.issue.issue_id, column.name, draggableId)}
-                                                                >
+                                                                    index={index}>
                                                                     {(provided, snapshot) => {
-                                                                        //   console.log(snapshot);
+
                                                                         return (
                                                                             <div
-                                                                                onClick={handleDivClick(item.issue.name)}
-                                                                                //  onDragEndCapture={handleUpdateIssue(item.issue.issue_id, column.name)}
-                                                                                // onDropCapture={handleUpdateIssue(item.issue.issue_id, column.name)}
                                                                                 ref={provided.innerRef}
                                                                                 {...provided.draggableProps}
                                                                                 {...provided.dragHandleProps}
