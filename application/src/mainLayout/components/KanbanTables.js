@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 //import SingleTables from './SingleTables';
 import '../componentsStyle/KanbanTables.css'
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
@@ -68,17 +68,63 @@ const KanbanTables = (props) => {
     const [columns, setColumns] = useState(taskColumns);
 
     function handleUpdateIssue(issue_id, name) {
-        //  console.log(issue_id);
-        console.log(issue_id);
+
     }
-    function handleClickIssue(id, index) {
-        //  console.log('click', id);
-        // console.log('click +index', index);
+    function handleClickIssue(id, name) {
+
     }
 
     function handleDivClick(name) {
-        // console.log('div', name);
+
     }
+
+    function updateStage(kanban_id, issue_id, stageName) {
+        let changedStage = {
+            "stage": stageName
+        }
+        fetch(`http://localhost:5000/api/v1/resources/kanbans//${kanban_id}/issues/${issue_id}/stage`, {
+            method: 'PUT',
+            headers: { "Content-Type": "application/json", 'Accept': 'application/json', },
+            body: JSON.stringify(changedStage),
+            // mode: 'no-cors' update working without this
+
+        })
+            .catch(err => console.log(err));
+    }
+
+
+    function checkIssueID(array, stageName) {
+        if (array !== []) {
+            for (let j in array) {
+                if (array[j].issue.stage !== stageName) {
+                    updateStage(array[j].issue.kanban_id, array[j].issue.issue_id, stageName)
+                }
+            }
+        }
+    }
+    useEffect(() => {
+        console.log(columns);
+        let toDoTableAfter;
+        let doingTableAfter;
+        let doneTableAfter;
+        for (let i in columns) {
+            if (columns[i].name === 'TO DO') {
+                toDoTableAfter = columns[i].items;
+            }
+            if (columns[i].name === 'DOING') {
+                doingTableAfter = columns[i].items;
+            }
+            if (columns[i].name === 'DONE') {
+                doneTableAfter = columns[i].items;
+            }
+        }
+        checkIssueID(toDoTableAfter, 'todo');
+        checkIssueID(doingTableAfter, 'doing');
+        checkIssueID(doneTableAfter, 'done');
+
+
+    })
+
     return (
         <div className="kanbanTablesStyle">
             <div className="backButtonContainer">
@@ -131,7 +177,6 @@ const KanbanTables = (props) => {
                                                                     index={index}
                                                                     onClick={handleClickIssue(item.issue.issue_id, index)}
                                                                 // onDragEnd={handleUpdateIssue(item.issue.issue_id, column.name, draggableId)}
-
                                                                 >
                                                                     {(provided, snapshot) => {
                                                                         //   console.log(snapshot);
