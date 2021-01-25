@@ -90,7 +90,9 @@ class IssuesAll(Resource):
                 api.payload["name"].replace(" ", "") == ""
                 or api.payload["creator"].replace(" ", "") == ""
             ):
-                return {"response": "Name/creator cannot be null or whitespaces only"}, 400
+                return {
+                    "response": "Name/creator cannot be null or whitespaces only"
+                }, 400
         except KeyError as ke:
             logger.exception(ke)
             return {"response": "Name/description is missing"}, 400

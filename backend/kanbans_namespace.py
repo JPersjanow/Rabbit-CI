@@ -94,19 +94,19 @@ class KanbansAll(Resource):
             )
             kanban_creator.create_new_kanban_config(
                 kanbans_directory=config.kanbans_directory,
-                kanban_id=new_kanban_id, 
-                new_kanban_directory=new_kanban_dir, 
-                config_xml_tree=config_tree
+                kanban_id=new_kanban_id,
+                new_kanban_directory=new_kanban_dir,
+                config_xml_tree=config_tree,
             )
         except Exception as e:
-            logger.error("Couldn't create new kanban config! Deleting kanban"), 500
+            logger.error("Couldn't create new kanban config! Deleting kanban")
             logger.exception(e)
             os.rmdir(new_kanban_dir)
             return {
                 "response": "Failed while creating config.xml file, deleting kanban.",
                 "exception": str(e),
             }, 500
-        
+
         return {"response": f"New kanban board with id {new_kanban_id} created"}, 201
 
 
@@ -159,8 +159,7 @@ class KanbanSingle(Resource):
                 if api.payload["name"].replace(" ", "") == "":
                     return {"response": "Name cannot be null or whitespaces only"}, 400
                 elif api.payload["name"] != "string":
-                    update_xml_attribute(
-                        config_file_dir, "name", api.payload["name"])
+                    update_xml_attribute(config_file_dir, "name", api.payload["name"])
                     response["response_name"] = f"Updated with {api.payload['name']}"
                 if api.payload["description"] != "string":
                     update_xml_attribute(

@@ -37,6 +37,5 @@ class ConfigReader:
     def move_log(self):
         os.rename(
             "config_reader.log",
-            os.path.join(self.installation_directory,
-                         "logs", "config_reader.log"),
+            os.path.join(self.installation_directory, "logs", "config_reader.log"),
         )

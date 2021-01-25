@@ -36,7 +36,9 @@ class KanbanFinder:
         all_kanbans_info = []
         for single_kanban_directory in all_kanbans:
             if os.path.isdir(single_kanban_directory):
-                single_kanban_config = os.path.join(single_kanban_directory, "config.xml")
+                single_kanban_config = os.path.join(
+                    single_kanban_directory, "config.xml"
+                )
                 with open(single_kanban_config, "r") as xml_file:
                     all_kanbans_info.append(xmltodict.parse(xml_file.read()))
 
@@ -68,7 +70,9 @@ class KanbanCreator:
         """ Creates new kanban folder and returns new directory with new kanban id """
         all_kanbans = glob(os.path.join(kanbans_directory, "*"), recursive=True)
         try:
-            new_kanban_id = KanbanFinder.define_next_kanban_id(kanbans_directory=kanbans_directory)
+            new_kanban_id = KanbanFinder.define_next_kanban_id(
+                kanbans_directory=kanbans_directory
+            )
         except FileNotFoundError:
             new_kanban_id = 1
         new_kanban_directory = os.path.join(kanbans_directory, str(new_kanban_id))
@@ -78,10 +82,11 @@ class KanbanCreator:
 
     @staticmethod
     def create_new_kanban_config(
-        kanbans_directory: str, 
-        kanban_id: int, 
-        new_kanban_directory: str, 
-        config_xml_tree) -> None:
+        kanbans_directory: str,
+        kanban_id: int,
+        new_kanban_directory: str,
+        config_xml_tree,
+    ) -> None:
         with open(
             os.path.join(new_kanban_directory, "config.xml"), "w+"
         ) as config_file:
