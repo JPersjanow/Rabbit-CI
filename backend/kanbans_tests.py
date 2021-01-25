@@ -86,7 +86,7 @@ class CDELETEkanban(unittest.TestCase):
 
     def test_delete_no_id(self):
         r = requests.delete(url_kanaban + "")
-        self.assertEqual(r.status_code, 400)
+        self.assertEqual(r.status_code, 404)
 
 
 class DGETKanbans(unittest.TestCase):
@@ -230,8 +230,8 @@ class IPUTissues(unittest.TestCase):
         self.assertEqual(r.status_code, 400)
 
     def test_put_no_desc(self):
-        r = requests.put(url_kanaban + "1"+"/issues/" + "1",
-                         json={"name": "", "description": "", "creator": "julia"})
+        r = requests.put(url_kanaban + "2"+"/issues/" + "1",
+                         json={"name": "issue 1", "description": "", "creator": "julia"})
         self.assertEqual(r.status_code, 204)
 
     def test_put_no_creator(self):
@@ -283,7 +283,7 @@ class KDELETEIssue(unittest.TestCase):
 
     def test_delete_no_id(self):
         r = requests.delete(url_kanaban + "1"+"/issues/" + "")
-        self.assertEqual(r.status_code, 404)
+        self.assertEqual(r.status_code, 405)
 
 
 # Stages unit tests:

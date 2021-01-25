@@ -82,11 +82,19 @@ class IssuesAll(Resource):
     @api.response(500, "Unable to create issue")
     def post(self, kanban_id):
         request.get_json(force=True)
-        if (
-            api.payload["name"].replace(" ", "") == ""
-            or api.payload["creator"].replace(" ", "") == ""
-        ):
-            return {"response": "Name/creator cannot be null or whitespaces only"}, 400
+        if api.payload is None or api.payload == {}:
+            return {"response": "Unable to decode payload"}, 400
+
+        try:
+            if (
+                api.payload["name"].replace(" ", "") == ""
+                or api.payload["creator"].replace(" ", "") == ""
+            ):
+                return {"response": "Name/creator cannot be null or whitespaces only"}, 400
+        except KeyError as ke:
+            logger.exception(ke)
+            return {"response": "Name/description is missing"}, 400
+
         logger.info("Creating issue xml config")
         issue_creator = IssueCreator()
 
@@ -193,6 +201,10 @@ class IssueSingle(Resource):
         )
         logger.info(f"Kanban directory {kanban_directory}")
         if kanban_check:
+            request.get_json(force=True)
+            if api.payload is None or api.payload == {}:
+                return {"response": "Unable to decode payload"}, 400
+
             issue_finder = IssueFinder()
             issues_directory = issue_finder.return_issues_directory_for_kanban(
                 kanbans_directory=config.kanbans_directory, kanban_id=kanban_id
@@ -210,14 +222,18 @@ class IssueSingle(Resource):
                             "description",
                             api.payload["description"],
                         )
-                    if api.payload["creator"] != "string":
+                    if api.payload["creator"].replace(" ", "") == "":
+                        return {"response": "Issue creator cannot be null!"}, 400
+                    elif api.payload["creator"] != "string":
                         issue_updater.update_issue(
                             issues_directory,
                             issue_id,
                             "creator",
                             api.payload["creator"],
                         )
-                    if api.payload["name"] != "string":
+                    if api.payload["name"].replace(" ", "") == "":
+                        return {"response": "Issue name cannot be null!"}, 400
+                    elif api.payload["name"] != "string":
                         issue_updater.update_issue(
                             issues_directory, issue_id, "name", api.payload["name"]
                         )
@@ -230,7 +246,7 @@ class IssueSingle(Resource):
                     logger.exception(e)
                     return {"response": "Couldn't update issue"}, 500
 
-                return 204
+                return {}, 204
             else:
                 logger.warning(
                     f"Unable to update issues! Issue with id {issue_id} not found"
@@ -279,7 +295,7 @@ class IssueSingle(Resource):
             return {"response": "Kanban id not found"}, 400
 
 
-@ns.route("//<int:kanban_id>/issues/<int:issue_id>/stage")
+@ns.route("/<int:kanban_id>/issues/<int:issue_id>/stage")
 class IssueSingleStage(Resource):
     """ Endpoint for getting stage of certain issue"""
 
@@ -314,6 +330,9 @@ class IssueSingleStage(Resource):
     @api.response(400, "Bad request")
     @api.response(500, "Unable to change stage")
     def put(self, kanban_id, issue_id):
+        request.get_json(force=True)
+        if api.payload is None or api.payload == {}:
+            return {"response": "Unable to decode payload"}, 400
         if (
             api.payload["stage"].replace(" ", "") == ""
             or api.payload["stage"] == "string"
@@ -332,7 +351,7 @@ class IssueSingleStage(Resource):
                 issue_id=issue_id,
                 stage_to_assign=api.payload["stage"],
             )
-            return 201
+            return {}, 204
         except AttributeError:
             logger.error(f"Issue is not set to any stage! Check issue config xml")
             return {"response": "Issue is not set to any stage"}, 500
