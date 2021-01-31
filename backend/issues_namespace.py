@@ -310,7 +310,7 @@ class IssueSingleStage(Resource):
             return {"response": "Couldn't check issue stage"}, 500
 
     @ns.expect(issue_model_stage)
-    @api.response(201, "Issue changed")
+    @api.response(204, "Issue updated")
     @api.response(400, "Bad request")
     @api.response(500, "Unable to change stage")
     def put(self, kanban_id, issue_id):
