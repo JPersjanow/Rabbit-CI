@@ -53,13 +53,17 @@ const MainContent = (props) => {
     const inputChangeHandler = props.inputChangeHandler;
     const submitNewKanbanHandler = props.submitNewKanbanHandler;
     const cancelButtonHandler = props.cancelButtonHandler;
+    const kanbanID = props.currentKanbanID;
     return (
         <div className="mainContentStyle">
             { isuserKanbansTablePage && !isUserKanbansPage ?
                 <KanbanTables
                     singleKanbanName={singleKanbanName}
                     userKanbanListButtonBackHandler={userKanbanListButtonBackHandler}
-                    kanbanTablesContent={kanbanTablesContent} />
+                    kanbanTablesContent={kanbanTablesContent}
+                    kanbanID={kanbanID} />
+
+
                 : <AssignedKanbanTable
                     userKanbans={userKanbans}
                     userKanbanListButton={userKanbanListButton}

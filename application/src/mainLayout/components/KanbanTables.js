@@ -43,9 +43,14 @@ const onDragEnd = (result, columns, setColumns) => {
 
 const KanbanTables = (props) => {
     const singleKanbanName = props.singleKanbanName;
-    const userKanbanListButtonBackHandler = props.userKanbanListButtonBackHandler;
-    const kanbanTablesContent = props.kanbanTablesContent;
+    const [kanbanTablesContent, setKanbanTablesContent] = useState(props.kanbanTablesContent);
 
+    const [addedStatus, setAddedStatus] = useState(false);
+    const [newIssueName, setNewIssueName] = useState('');
+    let value;
+    // const userKanbanListButtonBackHandler = props.userKanbanListButtonBackHandler;
+    //let kanbanTablesContent = props.kanbanTablesContent;
+    const kanbanID = props.kanbanID;
     const toDoTable = kanbanTablesContent.filter(item => item.issue.stage === "todo");
     const doingTable = kanbanTablesContent.filter(item => item.issue.stage === "doing");
     const doneTable = kanbanTablesContent.filter(item => item.issue.stage === "done");
@@ -64,8 +69,26 @@ const KanbanTables = (props) => {
             items: doneTable
         }
     }
-
     const [columns, setColumns] = useState(taskColumns);
+
+
+    function refreshIssue(kanbanID) {
+        console.log('ref');
+        const query = `http://localhost:5000/api/v1/resources/kanbans/${kanbanID}/issues`; // http instead of https
+        fetch(query).then(response => {
+            if (response.ok) {
+                console.log(response);
+                return response // need this to clear data and take array
+            }
+            throw Error(response.status)
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data);
+                setKanbanTablesContent(data);
+            })
+            .catch(error => console.log(error))
+    }
+
 
     function updateStage(kanban_id, issue_id, stageName) {
         let changedStage = {
@@ -80,7 +103,6 @@ const KanbanTables = (props) => {
         })
             .catch(err => console.log(err));
     }
-
 
     function checkIssueID(array, stageName) {
         if (array !== []) {
@@ -110,9 +132,59 @@ const KanbanTables = (props) => {
         checkIssueID(toDoTableAfter, 'todo');
         checkIssueID(doingTableAfter, 'doing');
         checkIssueID(doneTableAfter, 'done');
-
-
     })
+
+    function handleRemoveIssueButton(kanban_id, issue_id) {
+        console.log(issue_id);
+        fetch(`http://localhost:5000/api/v1/resources/kanbans/${kanban_id}/issues/${issue_id}`, {
+            method: 'DELETE',
+            headers: { "Content-Type": "application/json", 'Accept': 'application/json', },
+            body: null,
+            //mode: 'no-cors', delete working without this
+
+        })
+            .catch(err => console.log(err));
+
+    }
+
+    function handleAddIssu(columnId) {
+        console.log(columnId);
+        setAddedStatus(true);
+    }
+
+    function handleIssueNameChange(e) {
+        let inputValue = e.target.value;
+        setNewIssueName(inputValue);
+    }
+
+    function submitNewIssue(kanbanID) {
+        if (newIssueName === "") {
+            return alert("need to write new issue name!");
+        }
+        else {
+            let newIssue = {
+                "name": newIssueName,
+                "description": "string",
+                "creator": "string"
+            }
+            setAddedStatus(false);
+            fetch(`http://localhost:5000/api/v1/resources/kanbans/${kanbanID}/issues`, {
+                method: 'POST',
+                headers: { "Content-Type": "application/json", 'Accept': 'application/json', },
+                body: JSON.stringify(newIssue),
+                mode: 'no-cors'
+
+            })
+                .catch(err => console.log(err));
+            // refreshIssue(kanbanID);
+        }
+
+    }
+
+    function cancelButtonHandler() {
+        setNewIssueName('');
+        setAddedStatus(false);
+    }
 
     return (
         <div className="kanbanTablesStyle">
@@ -133,7 +205,10 @@ const KanbanTables = (props) => {
                                     }}
                                     key={columnId}
                                 >
-                                    <h2>{column.name}</h2>
+                                    <div className='tableTitle'>
+                                        <h2>{column.name}</h2>
+                                        {column.name === 'TO DO' ? <button onClick={() => handleAddIssu(columnId)}>+</button> : null}
+                                    </div>
                                     <div style={{ margin: 8 }}>
                                         <Droppable droppableId={columnId} key={columnId}>
                                             {(provided, snapshot) => {
@@ -150,6 +225,24 @@ const KanbanTables = (props) => {
                                                             minHeight: 500
                                                         }}
                                                     >
+                                                        {addedStatus && column.name === 'TO DO' ?
+                                                            <div className='addedIssueBox'>
+                                                                <input
+                                                                    type='text'
+                                                                    value={value}
+                                                                    onChange={handleIssueNameChange}
+                                                                    placeholder="Write new issue name..."></input>
+                                                                <button onClick={() => cancelButtonHandler()}
+                                                                    style={{ fontSize: '16px', fontFamily: 'fontawesome' }}>
+                                                                    <i className="fas fa-times"></i>
+                                                                </button>
+                                                                <button onClick={() => submitNewIssue(kanbanID)}
+                                                                    style={{ fontSize: '16px', fontFamily: 'fontawesome' }}>
+                                                                    <i className="fas fa-check"></i>
+                                                                </button>
+
+                                                            </div>
+                                                            : null}
                                                         {column.items.map((item, index) => {
                                                             return (
                                                                 <Draggable
@@ -164,6 +257,7 @@ const KanbanTables = (props) => {
                                                                                 {...provided.draggableProps}
                                                                                 {...provided.dragHandleProps}
                                                                                 style={{
+                                                                                    display: 'grid',
                                                                                     userSelect: "none",
                                                                                     padding: 16,
                                                                                     margin: "0 0 8px 0",
@@ -175,7 +269,13 @@ const KanbanTables = (props) => {
                                                                                     ...provided.draggableProps.style
                                                                                 }}
                                                                             >
-                                                                                <span>{item.issue.name}</span>
+                                                                                <div style={{ position: 'relative' }}>
+                                                                                    <span>{item.issue.name}</span>
+                                                                                    <button onClick={() =>
+                                                                                        handleRemoveIssueButton(item.issue.kanban_id, item.issue.issue_id)}
+                                                                                        className='deleteIssue'>
+                                                                                        <i className="fas fa-times"></i></button>
+                                                                                </div>
                                                                                 <span>{item.issue.creation_date}</span>
                                                                             </div>
                                                                         );

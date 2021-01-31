@@ -10,3 +10,22 @@
    display: flex;
    margin-top:1%;
 }
+
+.deleteIssue{
+    position: absolute;
+    text-align: right;
+    right:0;
+    font-size: 16px;
+    font-family: 'fontawesome'
+}
+
+.tableTitle{
+    background-color: lightgrey;
+    width: 95%;
+    display: flow-root;
+    text-align: center;
+    border-bottom: 1px solid black;
+}
+.addedIssueBox{
+   background-color: '#FFA887'; 
+}
