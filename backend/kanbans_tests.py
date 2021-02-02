@@ -86,11 +86,7 @@ class CDELETEkanban(unittest.TestCase):
 
     def test_delete_no_id(self):
         r = requests.delete(url_kanaban + "")
-<<<<<<< Updated upstream
-        self.assertEqual(r.status_code, 400)
-=======
         self.assertEqual(r.status_code, 405)
->>>>>>> Stashed changes
 
 
 class DGETKanbans(unittest.TestCase):
@@ -286,36 +282,13 @@ class KDELETEIssue(unittest.TestCase):
         self.assertTrue("Kanban id not found" in r.text)
 
     def test_delete_no_id(self):
-<<<<<<< Updated upstream
-        r = requests.delete(url_kanaban + "1"+"/issues/" + "")
-=======
         r = requests.delete(url_kanaban + "1" + "/issues/" + "")
->>>>>>> Stashed changes
         self.assertEqual(r.status_code, 404)
 
 
 # Stages unit tests:
 class LPUTStage(unittest.TestCase):
     def test_put_existing_todo(self):
-<<<<<<< Updated upstream
-        r = requests.put(url_kanaban + "/4"+"/issues/" + "1/stage",
-                         json={"stage": "todo"})
-        self.assertEqual(r.status_code, 200)
-
-    def test_put_existing_doing(self):
-        r = requests.put(url_kanaban + "/4"+"/issues/" + "1/stage",
-                         json={"stage": "doing"})
-        self.assertEqual(r.status_code, 200)
-
-    def test_put_existing_done(self):
-        r = requests.put(url_kanaban + "/4"+"/issues/" + "1/stage",
-                         json={"stage": "done"})
-        self.assertEqual(r.status_code, 200)
-
-    def test_put_not_existing_stage(self):
-        r = requests.put(url_kanaban + "/4"+"/issues/" + "1/stage",
-                         json={"stage": "test"})
-=======
         r = requests.put(
             url_kanaban + "4" + "/issues/" + "1/stage", json={"stage": "todo"}
         )
@@ -337,38 +310,18 @@ class LPUTStage(unittest.TestCase):
         r = requests.put(
             url_kanaban + "4" + "/issues/" + "1/stage", json={"stage": "test"}
         )
->>>>>>> Stashed changes
         self.assertEqual(r.status_code, 400)
         self.assertTrue(
             "Stage cannot be anything other than todo, done or doing" in r.text)
 
     def test_put_empty_stage(self):
-<<<<<<< Updated upstream
-        r = requests.put(url_kanaban + "/4"+"/issues/" + "1/stage",
-                         json={"stage": ""})
-=======
         r = requests.put(
             url_kanaban + "4" + "/issues/" + "1/stage", json={"stage": ""}
         )
->>>>>>> Stashed changes
         self.assertEqual(r.status_code, 400)
         self.assertTrue("Stage cannot be null or whitespaces only" in r.text)
 
     def test_put_not_existing_kanban(self):
-<<<<<<< Updated upstream
-        r = requests.put(url_kanaban + "/4000"+"/issues/" + "1/stage",
-                         json={"stage": "doing"})
-        self.assertEqual(r.status_code, 400)
-
-    def test_put_not_existing_issue(self):
-        r = requests.put(url_kanaban + "/4"+"/issues/" + "1000/stage",
-                         json={"stage": "doing"})
-        self.assertEqual(r.status_code, 400)
-
-    def test_put_no_body(self):
-        r = requests.put(url_kanaban + "/4"+"/issues/" + "1/stage",
-                         json={})
-=======
         r = requests.put(
             url_kanaban + "4000" + "/issues/" + "1/stage", json={"stage": "doing"}
         )
@@ -382,7 +335,6 @@ class LPUTStage(unittest.TestCase):
 
     def test_put_no_body(self):
         r = requests.put(url_kanaban + "4" + "/issues/" + "1/stage", json={})
->>>>>>> Stashed changes
         self.assertEqual(r.status_code, 400)
 
 
