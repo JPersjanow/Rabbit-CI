@@ -78,3 +78,11 @@
     opacity: 1;
     right: 0;
   }
+
+  .kanbanNameSpan{
+    max-width: 90%;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
