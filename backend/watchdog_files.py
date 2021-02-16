@@ -7,19 +7,10 @@ import os
 
 from tools.config_reader import ConfigReader
 from tools.xml_tools import return_xml_attribute_value
+from server import MachineConnector
 
 config = ConfigReader()
-
-def send(cmd):
-    address = ('127.0.0.1', 5005)
-    conn = Client(address, authkey=b"pass")
-    try:
-        conn.send(str(cmd))
-    except Exception as e:
-        print(e)
-    finally:
-        conn.close()
-
+mc = MachineConnector()
 
 def on_created(event):
     print(f"{event.src_path} has been created")
@@ -33,8 +24,9 @@ def on_deleted(event):
 
 def on_modified(event):
     print(f"{event.src_path} has been modified")
-    command = return_xml_attribute_value(xml_file=event.src_path, attribute_name="cmd")
-    print(f"Sending command {command}")
+    # command = return_xml_attribute_value(xml_file=event.src_path, attribute_name="cmd")
+    # print(f"Sending command {command}")
+    mc.send_message = "MODIFIED"
     guli.GuliVariable("on_modified").setValue("true")
 
 
@@ -57,7 +49,7 @@ if __name__ == "__main__":
     my_event_handler.on_modified = on_modified
     my_event_handler.on_moved = on_moved
 
-    path = config.jobs_directory
+    path = config.kanbans_directory
     go_recursively = True
     my_observer = Observer()
     my_observer.schedule(my_event_handler, path, recursive=go_recursively)
@@ -66,12 +58,7 @@ if __name__ == "__main__":
 
     
     try:
-        while True:
-            print(guli.GuliVariable("on_modified").get())
-            if guli.GuliVariable("on_modified").get() == "true":
-                print("OK!")
-                send(cmd="hello")
-            time.sleep(1)
+        mc.start_connector()
     except KeyboardInterrupt:
         my_observer.stop()
         my_observer.join()

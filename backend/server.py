@@ -1,21 +1,41 @@
-#!/usr/bin/env python
-
 import socket
+import time
 
+class MachineConnector:
+    def __init__(self, machine_address='localhost'):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-TCP_IP = '127.0.0.1'
-TCP_PORT = 5005
-BUFFER_SIZE = 20  # Normally 1024, but we want fast response
+        self.server_address = (machine_address, 5005)
+        print(f"SERVER IP: {self.server_address[0]} | SERVER PORT: {self.server_address[1]}")
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((TCP_IP, TCP_PORT))
-s.listen(1)
+        self.sock.bind(self.server_address)
 
-conn, addr = s.accept()
-print('Connection address:', addr)
-while 1:
-    data = conn.recv(BUFFER_SIZE)
-    if not data: break
-    print("received data:", data)
-    conn.send(data)  # echo
-conn.close()
+        self.message = ""
+        self.send_message = ""
+    
+    def start_connector(self):
+        self.sock.listen(1)
+
+        while True:
+            print(f"Waiting for connection")
+            # time.sleep(10)
+            connection, clinet_address = self.sock.accept()
+            try:
+                print(f"Connection established from: {clinet_address}")
+
+                while True:
+                    data = connection.recv(16)
+                    self.message = data
+                    print(f"Received {data}")
+                    if data:
+                        print("Sedning info back to client")
+                        connection.send(b"YOU ARE CONNECTED")
+                    else:
+                        break
+
+                    if self.send_message != "":
+                        connection.send(bytes(self.send_message))
+            except Exception as e:
+                print(e)
+            finally:
+                connection.close()
