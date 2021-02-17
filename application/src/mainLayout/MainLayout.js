@@ -127,6 +127,11 @@ class MainLayout extends React.Component {
             addedKanbanName: "",
         });
     }
+    handleAutomationModuleButton = () => {
+        this.setState({
+            automationPage: !this.state.automationPage,
+        })
+    }
 
     render() {
         const userKanbans = this.state.userKanbans;
@@ -145,6 +150,7 @@ class MainLayout extends React.Component {
         const submitNewKanbanHandler = this.handleSubmitNewKanban;
         const cancelButtonHandler = this.handleCancelButton;
         const currentKanbanID = this.state.currentKanbanID;
+        const handleAutomationModuleButton = this.handleAutomationModuleButton;
         return (
             <div className="mainLayout">
                 <TopNav
@@ -154,7 +160,8 @@ class MainLayout extends React.Component {
                     <LeftMenu
                         userKanbansTablePage={userKanbansTablePage}
                         addNewKanbanButtonHandler={addNewKanbanButtonHandler}
-                        userKanbanListButtonBackHandler={userKanbanListButtonBackHandler} />
+                        userKanbanListButtonBackHandler={userKanbanListButtonBackHandler}
+                        handleAutomationModuleButton={handleAutomationModuleButton} />
                     <MainContent
                         userKanbans={userKanbans}
                         isUserKanbansPage={userKanbansPage}
