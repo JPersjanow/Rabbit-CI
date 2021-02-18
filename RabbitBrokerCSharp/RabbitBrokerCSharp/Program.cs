@@ -3,13 +3,50 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-public class SynchronousSocketClient
+class SynchronousSocketClient
 {
+    Int32 port = 0;
+    String server = null;
 
-    static void Connect(String server, String message)
+    public void RabbitInfoUser()
+    {
+        Console.WriteLine("Enter Rabbit server ip:");
+        server = Console.ReadLine();
+        Console.WriteLine("Enter port to connect, if empty will default to 5005");
+        String port_user = Console.ReadLine();
+        if (port_user == "")
+        {
+            Console.WriteLine("Default port set to {0}", port);
+        }
+        else
+        {
+            port = System.Convert.ToInt32(port_user);
+        }
+    }
+    public void Connect(String message)
     {
         Int32 port = 5005;
-        TcpClient client = new TcpClient(server, port);
+        TcpClient client = null;
+        Int32 bytes = 0;
+        while (client == null)
+        {
+            try
+            {
+                client = new TcpClient(server, port);
+
+            }
+            catch (SocketException e)
+            {
+                Console.WriteLine(e);
+                Console.WriteLine("To retry -r, to exit -e");
+                String some_command = Console.ReadLine();
+
+                if (some_command == "e")
+                {
+                    Environment.Exit(1);
+                }
+            }
+        }
 
         Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
 
@@ -17,11 +54,11 @@ public class SynchronousSocketClient
 
         NetworkStream stream = client.GetStream();
         // Send the message to the connected TcpServer.
-        stream.Write(data, 0, data.Length);
+        //stream.Write(data, 0, data.Length);
 
-        Console.WriteLine("Sent: {0}", message);
+        //Console.WriteLine("Sent: {0}", message);
 
-        data = new Byte[256];
+        data = new Byte[1024];
 
         while (true)
         {
@@ -32,11 +69,15 @@ public class SynchronousSocketClient
                 String responseData = String.Empty;
 
                 // Read the first batch of the TcpServer response bytes.
-                Int32 bytes = stream.Read(data, 0, data.Length);
+                bytes = stream.Read(data, 0, data.Length);
                 responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
                 if(responseData.Length > 0 )
                 {
                     Console.WriteLine("Received: {0}", responseData);
+                    if (responseData.Equals("/K ping wp.pl"))
+                    {
+                        System.Diagnostics.Process.Start("CMD.exe", responseData);
+                    }
                 }
 
             }
@@ -55,16 +96,18 @@ public class SynchronousSocketClient
                 client.Close();
             }
         }
+    }
 
-        
-
-        Console.WriteLine("\n Press Enter to continue...");
-        Console.Read();
+    public void RunCommand(String command)
+    {
+        System.Diagnostics.Process.Start("CMD.exe", command);
     }
 
     public static int Main(String[] args)
     {
-        Connect("127.0.0.1", "dupa");
+        SynchronousSocketClient SocketClient = new SynchronousSocketClient();
+        SocketClient.RabbitInfoUser();
+        SocketClient.Connect("message");
         return 0;
     }
 }

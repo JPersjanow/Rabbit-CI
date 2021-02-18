@@ -9,3 +9,14 @@ C:\Users\jakub\source\repos\RabbitBrokerCSharp\RabbitBrokerCSharp\obj\Debug\netc
 C:\Users\jakub\source\repos\RabbitBrokerCSharp\RabbitBrokerCSharp\obj\Debug\netcoreapp2.1\RabbitBrokerCSharp.AssemblyInfo.cs
 C:\Users\jakub\source\repos\RabbitBrokerCSharp\RabbitBrokerCSharp\obj\Debug\netcoreapp2.1\RabbitBrokerCSharp.dll
 C:\Users\jakub\source\repos\RabbitBrokerCSharp\RabbitBrokerCSharp\obj\Debug\netcoreapp2.1\RabbitBrokerCSharp.pdb
+E:\Studia\Semestr II\Rabbit\Rabbit-CI\RabbitBrokerCSharp\RabbitBrokerCSharp\bin\Debug\netcoreapp2.1\RabbitBrokerCSharp.deps.json
+E:\Studia\Semestr II\Rabbit\Rabbit-CI\RabbitBrokerCSharp\RabbitBrokerCSharp\bin\Debug\netcoreapp2.1\RabbitBrokerCSharp.runtimeconfig.json
+E:\Studia\Semestr II\Rabbit\Rabbit-CI\RabbitBrokerCSharp\RabbitBrokerCSharp\bin\Debug\netcoreapp2.1\RabbitBrokerCSharp.runtimeconfig.dev.json
+E:\Studia\Semestr II\Rabbit\Rabbit-CI\RabbitBrokerCSharp\RabbitBrokerCSharp\bin\Debug\netcoreapp2.1\RabbitBrokerCSharp.dll
+E:\Studia\Semestr II\Rabbit\Rabbit-CI\RabbitBrokerCSharp\RabbitBrokerCSharp\bin\Debug\netcoreapp2.1\RabbitBrokerCSharp.pdb
+E:\Studia\Semestr II\Rabbit\Rabbit-CI\RabbitBrokerCSharp\RabbitBrokerCSharp\obj\Debug\netcoreapp2.1\RabbitBrokerCSharp.csprojAssemblyReference.cache
+E:\Studia\Semestr II\Rabbit\Rabbit-CI\RabbitBrokerCSharp\RabbitBrokerCSharp\obj\Debug\netcoreapp2.1\RabbitBrokerCSharp.csproj.CoreCompileInputs.cache
+E:\Studia\Semestr II\Rabbit\Rabbit-CI\RabbitBrokerCSharp\RabbitBrokerCSharp\obj\Debug\netcoreapp2.1\RabbitBrokerCSharp.AssemblyInfoInputs.cache
+E:\Studia\Semestr II\Rabbit\Rabbit-CI\RabbitBrokerCSharp\RabbitBrokerCSharp\obj\Debug\netcoreapp2.1\RabbitBrokerCSharp.AssemblyInfo.cs
+E:\Studia\Semestr II\Rabbit\Rabbit-CI\RabbitBrokerCSharp\RabbitBrokerCSharp\obj\Debug\netcoreapp2.1\RabbitBrokerCSharp.dll
+E:\Studia\Semestr II\Rabbit\Rabbit-CI\RabbitBrokerCSharp\RabbitBrokerCSharp\obj\Debug\netcoreapp2.1\RabbitBrokerCSharp.pdb

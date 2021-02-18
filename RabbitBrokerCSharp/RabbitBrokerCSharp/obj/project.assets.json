@@ -694,11 +694,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jakub\\source\\repos\\RabbitBrokerCSharp\\RabbitBrokerCSharp\\RabbitBrokerCSharp.csproj",
+      "projectUniqueName": "E:\\Studia\\Semestr II\\Rabbit\\Rabbit-CI\\RabbitBrokerCSharp\\RabbitBrokerCSharp\\RabbitBrokerCSharp.csproj",
       "projectName": "RabbitBrokerCSharp",
-      "projectPath": "C:\\Users\\jakub\\source\\repos\\RabbitBrokerCSharp\\RabbitBrokerCSharp\\RabbitBrokerCSharp.csproj",
+      "projectPath": "E:\\Studia\\Semestr II\\Rabbit\\Rabbit-CI\\RabbitBrokerCSharp\\RabbitBrokerCSharp\\RabbitBrokerCSharp.csproj",
       "packagesPath": "C:\\Users\\jakub\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jakub\\source\\repos\\RabbitBrokerCSharp\\RabbitBrokerCSharp\\obj\\",
+      "outputPath": "E:\\Studia\\Semestr II\\Rabbit\\Rabbit-CI\\RabbitBrokerCSharp\\RabbitBrokerCSharp\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
