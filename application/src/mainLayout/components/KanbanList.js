@@ -4,7 +4,7 @@ import '../componentsStyle/KanbanList.css'
 const ListElement = (props) => {
     const elements = props.userKanbans.map((item) => (
         <div key={item.kanban.info.id} className="kanbansRow">
-            <span>{item.kanban.info.name}</span>
+            <span className='kanbanNameSpan'>{item.kanban.info.name}</span>
             <button onClick={() => props.userKanbanListButton(item.kanban.info.id)}
                 style={{ float: 'right', fontSize: '16px', fontFamily: 'fontawesome !important' }}>
                 <i className="fa fa-arrow-right"></i>

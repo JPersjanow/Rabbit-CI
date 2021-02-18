@@ -2,6 +2,7 @@ import React from 'react';
 import '../mainComponentsStyle/MainContent.css'
 import KanbanList from '../components/KanbanList'
 import KanbanTables from '../components/KanbanTables'
+import AutomationModule from '../components/AutomationModule';
 
 
 const AssignedKanbanTable = (props) => {
@@ -53,13 +54,17 @@ const MainContent = (props) => {
     const inputChangeHandler = props.inputChangeHandler;
     const submitNewKanbanHandler = props.submitNewKanbanHandler;
     const cancelButtonHandler = props.cancelButtonHandler;
+    const kanbanID = props.currentKanbanID;
+    const isAutomationPage = props.isAutomationPage;
     return (
         <div className="mainContentStyle">
             { isuserKanbansTablePage && !isUserKanbansPage ?
                 <KanbanTables
                     singleKanbanName={singleKanbanName}
                     userKanbanListButtonBackHandler={userKanbanListButtonBackHandler}
-                    kanbanTablesContent={kanbanTablesContent} />
+                    kanbanTablesContent={kanbanTablesContent}
+                    kanbanID={kanbanID} />
+
                 : <AssignedKanbanTable
                     userKanbans={userKanbans}
                     userKanbanListButton={userKanbanListButton}
@@ -71,6 +76,7 @@ const MainContent = (props) => {
                     cancelButtonHandler={cancelButtonHandler}
                 />
             }
+            {isAutomationPage && !isuserKanbansTablePage ? <AutomationModule /> : null}
         </div>
     )
 

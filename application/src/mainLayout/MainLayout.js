@@ -18,6 +18,7 @@ class MainLayout extends React.Component {
         addNewKanban: false,
         addedKanbanName: "",
         sumbmitState: 1,
+        currentKanbanID: '',
     }
 
 
@@ -43,13 +44,10 @@ class MainLayout extends React.Component {
         this.handleRefreshKanbans();
     }
 
-
     handleKanbanListButton = (kanbanId) => {
-        // console.log(kanbanId);
         const userTables = this.state.userKanbans;
         const chooseKanban = userTables.filter(item => item.kanban.info.id === kanbanId); //
         const thiskanbanName = chooseKanban[0].kanban.info.name;
-        // console.log(chooseKanban);
         const queryChoosenKanbanIssue = `http://localhost:5000/api/v1/resources/kanbans/${kanbanId}/issues`
         fetch(queryChoosenKanbanIssue).then(response => {
             if (response.ok) {
@@ -64,6 +62,7 @@ class MainLayout extends React.Component {
                     userKanbansPage: false,
                     userKanbansTablePage: true,
                     singleKanbanName: thiskanbanName,
+                    currentKanbanID: kanbanId,
                 })
             })
             .catch(error => console.log(error))
@@ -75,6 +74,7 @@ class MainLayout extends React.Component {
             userKanbansPage: true,
             userKanbansTablePage: false,
             singleKanbanName: "",
+            currentKanbanID: '',
         })
     }
 
@@ -93,7 +93,6 @@ class MainLayout extends React.Component {
         });
     }
 
-
     handleSubmitNewKanban = () => {
         const addedKanbanName = this.state.addedKanbanName
         if (addedKanbanName === "") {
@@ -103,7 +102,6 @@ class MainLayout extends React.Component {
                 "name": addedKanbanName,
                 "description": "abc",
             }
-
             this.setState({
                 sumbmitState: 1,
                 addNewKanban: false,
@@ -129,6 +127,11 @@ class MainLayout extends React.Component {
             addedKanbanName: "",
         });
     }
+    handleAutomationModuleButton = () => {
+        this.setState({
+            automationPage: !this.state.automationPage,
+        })
+    }
 
     render() {
         const userKanbans = this.state.userKanbans;
@@ -146,6 +149,8 @@ class MainLayout extends React.Component {
         const inputChangeHandler = this.handleChange;
         const submitNewKanbanHandler = this.handleSubmitNewKanban;
         const cancelButtonHandler = this.handleCancelButton;
+        const currentKanbanID = this.state.currentKanbanID;
+        const handleAutomationModuleButton = this.handleAutomationModuleButton;
         return (
             <div className="mainLayout">
                 <TopNav
@@ -155,7 +160,8 @@ class MainLayout extends React.Component {
                     <LeftMenu
                         userKanbansTablePage={userKanbansTablePage}
                         addNewKanbanButtonHandler={addNewKanbanButtonHandler}
-                        userKanbanListButtonBackHandler={userKanbanListButtonBackHandler} />
+                        userKanbanListButtonBackHandler={userKanbanListButtonBackHandler}
+                        handleAutomationModuleButton={handleAutomationModuleButton} />
                     <MainContent
                         userKanbans={userKanbans}
                         isUserKanbansPage={userKanbansPage}
@@ -172,6 +178,7 @@ class MainLayout extends React.Component {
                         inputChangeHandler={inputChangeHandler}
                         submitNewKanbanHandler={submitNewKanbanHandler}
                         cancelButtonHandler={cancelButtonHandler}
+                        currentKanbanID={currentKanbanID}
                     />
                 </div>
             </div>

@@ -6,6 +6,7 @@ const LeftMenu = (props) => {
     const userKanbansTablePage = props.userKanbansTablePage;
     const addNewKanbanButtonHandler = props.addNewKanbanButtonHandler;
     const userKanbanListButtonBackHandler = props.userKanbanListButtonBackHandler;
+    const handleAutomationModuleButton = props.handleAutomationModuleButton;
     return (
         <div className="leftMenuStyle">
             {userKanbansTablePage ?
@@ -26,10 +27,12 @@ const LeftMenu = (props) => {
 
             <div className="automationAndConfiguration">
                 <div className="buttonsMenuContainer">
-                    <button className="automationBtn mainButtonStyle">
-                        <span>Automation Module </span></button>
-                    <button className="configurationBtn mainButtonStyle">
-                        <span> Configuration </span></button>
+                    {userKanbansTablePage ? null : <>
+                        <button className="automationBtn mainButtonStyle" onClick={() => handleAutomationModuleButton()}>
+                            <span>Automation Module </span></button>
+                        <button className="configurationBtn mainButtonStyle">
+                            <span> Configuration </span></button></>}
+
                 </div>
 
             </div>
