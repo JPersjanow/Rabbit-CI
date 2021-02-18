@@ -19,7 +19,7 @@ class ConfigReader:
             )
             sys.exit(1)
 
-        self.installation_directory, self.kanbans_directory = self.read()
+        self.installation_directory, self.kanbans_directory, self.jobs_directory = self.read()
         self.move_log()
 
     def read(self):
@@ -32,10 +32,12 @@ class ConfigReader:
         return (
             config_dict["rabbit_config"]["installation_directory"],
             config_dict["rabbit_config"]["kanbans_directory"],
+            config_dict["rabbit_config"]["jobs_directory"]
         )
 
     def move_log(self):
-        os.rename(
-            "config_reader.log",
-            os.path.join(self.installation_directory, "logs", "config_reader.log"),
-        )
+        # os.rename(
+        #     "config_reader.log",
+        #     os.path.join(self.installation_directory, "logs", "config_reader.log"),
+        # )
+        pass

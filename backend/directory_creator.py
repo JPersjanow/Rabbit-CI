@@ -160,10 +160,11 @@ class DirectoryCreator:
         cfg_creator.create_config_file()
 
     def move_log(self):
-        os.rename(
-            "directory_creator.log",
-            os.path.join(self.installation_directory, "logs", "directory_creator.log"),
-        )
+        # os.rename(
+        #     "directory_creator.log",
+        #     os.path.join(self.installation_directory, "logs", "directory_creator.log"),
+        # )
+        pass
 
     def run(self):
         if not self.validate_directory:
