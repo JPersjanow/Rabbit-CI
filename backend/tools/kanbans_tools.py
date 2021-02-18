@@ -35,9 +35,12 @@ class KanbanFinder:
         print(all_kanbans)
         all_kanbans_info = []
         for single_kanban_directory in all_kanbans:
-            single_kanban_config = os.path.join(single_kanban_directory, "config.xml")
-            with open(single_kanban_config, "r") as xml_file:
-                all_kanbans_info.append(xmltodict.parse(xml_file.read()))
+            if os.path.isdir(single_kanban_directory):
+                single_kanban_config = os.path.join(
+                    single_kanban_directory, "config.xml"
+                )
+                with open(single_kanban_config, "r") as xml_file:
+                    all_kanbans_info.append(xmltodict.parse(xml_file.read()))
 
         return all_kanbans_info
 
@@ -49,6 +52,15 @@ class KanbanFinder:
 
         return kanban_info
 
+    @staticmethod
+    def define_next_kanban_id(kanbans_directory: str) -> int:
+        with open(
+            os.path.join(kanbans_directory, "next_kanban_id"), "r"
+        ) as kanban_id_file:
+            kanban_issue_id = kanban_id_file.readline()
+        next_kanban_id = int(kanban_issue_id)
+        return next_kanban_id
+
 
 class KanbanCreator:
     """ Class consisting of methods for creating kanban boards objects """
@@ -57,18 +69,33 @@ class KanbanCreator:
     def create_new_kanban_folder(kanbans_directory: str) -> Tuple[str, int]:
         """ Creates new kanban folder and returns new directory with new kanban id """
         all_kanbans = glob(os.path.join(kanbans_directory, "*"), recursive=True)
-        new_kanban_id = len(all_kanbans) + 1
+        try:
+            new_kanban_id = KanbanFinder.define_next_kanban_id(
+                kanbans_directory=kanbans_directory
+            )
+        except FileNotFoundError:
+            new_kanban_id = 1
         new_kanban_directory = os.path.join(kanbans_directory, str(new_kanban_id))
         os.mkdir(new_kanban_directory)
 
         return new_kanban_directory, new_kanban_id
 
     @staticmethod
-    def create_new_kanban_config(new_kanban_directory: str, config_xml_tree) -> None:
+    def create_new_kanban_config(
+        kanbans_directory: str,
+        kanban_id: int,
+        new_kanban_directory: str,
+        config_xml_tree,
+    ) -> None:
         with open(
             os.path.join(new_kanban_directory, "config.xml"), "w+"
         ) as config_file:
             config_file.write(config_xml_tree)
+
+        with open(
+            os.path.join(kanbans_directory, "next_kanban_id"), "w+"
+        ) as kanban_id_file:
+            kanban_id_file.write(str(kanban_id + 1))
 
     @staticmethod
     def create_xml_tree_for_kanban_config(
